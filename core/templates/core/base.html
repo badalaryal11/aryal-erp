@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aryal Agro ERP{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <span>🌱</span> Aryal Agro
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">📊
+                        Dashboard</a></li>
+                <li><a href="{% url 'product_list' %}"
+                        class="nav-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}">📦
+                        Inventory</a></li>
+                <li><a href="#" class="nav-link">💰 Sales</a></li>
+                <li><a href="#" class="nav-link">📈 Reports</a></li>
+                <li><a href="/admin/" class="nav-link">⚙️ Admin</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+            <div class="user-profile">
+                <span>Admin</span>
+            </div>
+        </header>
+
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+
+</html>

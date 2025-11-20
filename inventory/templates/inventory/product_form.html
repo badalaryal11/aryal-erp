@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+
+{% block page_title %}Add Product{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="text-danger" style="margin-bottom: 1rem;">
+            Please correct the errors below.
+        </div>
+        {% endif %}
+
+        <div class="grid grid-3">
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Code (SKU)</label>
+                {{ form.code }}
+                {{ form.code.errors }}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                {{ form.category }}
+                {{ form.category.errors }}
+            </div>
+        </div>
+
+        <div class="grid grid-3">
+            <div class="form-group">
+                <label class="form-label">Selling Price</label>
+                {{ form.price }}
+                {{ form.price.errors }}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Cost Price</label>
+                {{ form.cost_price }}
+                {{ form.cost_price.errors }}
+            </div>
+            <div class="form-group">
+                <label class="form-label">Initial Stock</label>
+                {{ form.stock_quantity }}
+                {{ form.stock_quantity.errors }}
+            </div>
+        </div>
+
+        <div class="grid grid-3">
+            <div class="form-group">
+                <label class="form-label">Unit</label>
+                {{ form.unit }}
+                {{ form.unit.errors }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+            {{ form.description.errors }}
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary">Save Product</button>
+            <a href="{% url 'product_list' %}" class="btn"
+                style="background: var(--bg-dark); border: 1px solid var(--glass-border);">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

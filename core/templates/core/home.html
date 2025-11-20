@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-3">
+    <div class="card">
+        <h3>Total Sales</h3>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">Rs. 0.00</p>
+        <span class="text-success">+0% from last month</span>
+    </div>
+    <div class="card">
+        <h3>Low Stock Items</h3>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">0</p>
+        <span class="text-danger">Requires attention</span>
+    </div>
+    <div class="card">
+        <h3>Total Products</h3>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">0</p>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h3>Recent Transactions</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-secondary);">No recent transactions
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+
+{% block page_title %}Inventory{% endblock %}
+
+{% block content %}
+<div class="header" style="margin-bottom: 1rem;">
+    <form method="get" style="display: flex; gap: 0.5rem; flex: 1; max-width: 400px;">
+        <input type="text" name="q" class="form-control" placeholder="Search by name or code..." value="{{ query }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        {% if query %}
+        <a href="{% url 'product_list' %}" class="btn"
+            style="background: var(--bg-dark); border: 1px solid var(--glass-border);">Clear</a>
+        {% endif %}
+    </form>
+    <a href="{% url 'product_create' %}" class="btn btn-primary">＋ Add Product</a>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.code }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.category.name|default:"-" }}</td>
+                    <td>Rs. {{ product.price }}</td>
+                    <td>
+                        <span class="{% if product.stock_quantity < 10 %}text-danger{% else %}text-success{% endif %}">
+                            {{ product.stock_quantity }} {{ product.unit }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="#" style="color: var(--accent);">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                        No products found. <a href="{% url 'product_create' %}" style="color: var(--accent);">Add one
+                            now</a>.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
