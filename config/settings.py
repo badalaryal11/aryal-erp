@@ -30,7 +30,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-ubxsd$*s+n82drmhyoj847f1$w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,aryalagroenterprises.pythonanywhere.com').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://aryalagroenterprises.pythonanywhere.com',
+]
 
 
 # Application definition
