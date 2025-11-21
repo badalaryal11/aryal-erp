@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+
+{% block title %}New Sale{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">New Sale</h1>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form.as_p }}
+        </div>
+    </div>
+
+    <h3>Items</h3>
+    {{ items.management_form }}
+    <div id="formset-container">
+        {% for form in items %}
+        <div class="row mb-3 form-row">
+            <div class="col-md-5">
+                {{ form.product.label_tag }}
+                {{ form.product }}
+            </div>
+            <div class="col-md-3">
+                {{ form.quantity.label_tag }}
+                {{ form.quantity }}
+            </div>
+            <div class="col-md-2">
+                {% if items.can_delete %}
+                {{ form.DELETE }} Delete
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Sale</button>
+</form>
+
+<script>
+    // Basic script to handle adding new rows could be added here
+    // For now, we rely on Django's default extra=1.
+    // To make it truly dynamic, we'd need a button to clone the last row and update indices.
+</script>
+{% endblock %}

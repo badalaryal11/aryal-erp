@@ -1,50 +1,33 @@
 from django.db import models
-from inventory.models import Product, Service
+from inventory.models import Product
 
-class Customer(models.Model):
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, blank=True)
-    email = models.EmailField(blank=True)
-    address = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-class SaleOrder(models.Model):
-    STATUS_CHOICES = (
-        ('PENDING', 'Pending'),
-        ('COMPLETED', 'Completed'),
-        ('CANCELLED', 'Cancelled'),
+class Sale(models.Model):
+    PAYMENT_METHODS = (
+        ('CASH', 'Cash'),
+        ('CARD', 'Card'),
+        ('ONLINE', 'Online'),
     )
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
-    date = models.DateTimeField(auto_now_add=True)
-    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
-    
+    customer_name = models.CharField(max_length=100, blank=True, null=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS, default='CASH')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return f"Order #{self.id} - {self.date.strftime('%Y-%m-%d')}"
+        return f"Sale #{self.id} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
 class SaleItem(models.Model):
-    order = models.ForeignKey(SaleOrder, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
-    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True, blank=True)
-    quantity = models.IntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price at time of sale")
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    quantity = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        self.total = self.price * self.quantity
+        if not self.unit_price:
+            self.unit_price = self.product.price
+        self.total_price = self.quantity * self.unit_price
         super().save(*args, **kwargs)
 
     def __str__(self):
-        item_name = self.product.name if self.product else (self.service.name if self.service else "Unknown")
-        return f"{item_name} x {self.quantity}"
-
-class Invoice(models.Model):
-    order = models.OneToOneField(SaleOrder, on_delete=models.CASCADE, related_name='invoice')
-    file = models.FileField(upload_to='invoices/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Invoice for Order #{self.order.id}"
+        return f"{self.product.name} x {self.quantity}"
