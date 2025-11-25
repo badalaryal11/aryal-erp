@@ -26,3 +26,6 @@ venv.bak/
 # IDE
 .vscode
 .idea
+
+# macOS
+.DS_Store
