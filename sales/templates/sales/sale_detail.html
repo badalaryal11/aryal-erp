@@ -1,59 +1,56 @@
 {% extends 'core/base.html' %}
 
 {% block title %}Sale #{{ sale.id }}{% endblock %}
+{% block page_title %}Sale #{{ sale.id }}{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">Sale #{{ sale.id }}</h1>
-    <div class="btn-toolbar mb-2 mb-md-0">
-        <a href="{% url 'sales:sale_list' %}" class="btn btn-sm btn-outline-secondary">
-            Back to List
-        </a>
-    </div>
+<div class="toolbar">
+    <div></div>
+    <a href="{% url 'sales:sale_list' %}" class="btn btn-outline">
+        Back to List
+    </a>
 </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">Sale Details</div>
-            <div class="card-body">
-                <p><strong>Date:</strong> {{ sale.created_at|date:"Y-m-d H:i" }}</p>
-                <p><strong>Customer:</strong> {{ sale.customer_name|default:"-" }}</p>
-                <p><strong>Payment Method:</strong> {{ sale.get_payment_method_display }}</p>
-            </div>
+<div class="grid grid-3">
+    <div class="card">
+        <h3>Sale Details</h3>
+        <div style="margin-top: 1rem;">
+            <p style="margin-bottom: 0.5rem;"><strong>Date:</strong> {{ sale.created_at|date:"Y-m-d H:i" }}</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Customer:</strong> {{ sale.customer_name|default:"-" }}</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Payment Method:</strong> {{ sale.get_payment_method_display }}</p>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card mb-4">
-            <div class="card-header">Summary</div>
-            <div class="card-body">
-                <h3 class="text-end">Total: ${{ sale.total_amount }}</h3>
-            </div>
+    <div class="card">
+        <h3>Summary</h3>
+        <div style="margin-top: 1rem; text-align: right;">
+            <h3 style="color: var(--success); font-size: 2rem;">Rs. {{ sale.total_amount }}</h3>
         </div>
     </div>
 </div>
 
-<h3>Items</h3>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Unit Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in sale.items.all %}
-            <tr>
-                <td>{{ item.product.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>${{ item.unit_price }}</td>
-                <td>${{ item.total_price }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="card" style="margin-top: 2rem;">
+    <h3>Items</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in sale.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>Rs. {{ item.unit_price }}</td>
+                    <td>Rs. {{ item.total_price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}

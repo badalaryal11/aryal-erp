@@ -1,43 +1,49 @@
 {% extends 'core/base.html' %}
 
 {% block title %}New Sale{% endblock %}
+{% block page_title %}New Sale{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">New Sale</h1>
+<div class="toolbar">
+    <div></div>
 </div>
 
 <form method="post">
     {% csrf_token %}
-    <div class="row">
-        <div class="col-md-6">
+    <div class="card" style="margin-bottom: 2rem;">
+        <h3>Sale Details</h3>
+        <div class="form-grid" style="margin-top: 1rem;">
             {{ form.as_p }}
         </div>
     </div>
 
-    <h3>Items</h3>
-    {{ items.management_form }}
-    <div id="formset-container">
-        {% for form in items %}
-        <div class="row mb-3 form-row">
-            <div class="col-md-5">
-                {{ form.product.label_tag }}
-                {{ form.product }}
+    <div class="card">
+        <h3>Items</h3>
+        {{ items.management_form }}
+        <div id="formset-container" style="margin-top: 1rem;">
+            {% for form in items %}
+            <div class="formset-row">
+                <div>
+                    {{ form.product.label_tag }}
+                    {{ form.product }}
+                </div>
+                <div>
+                    {{ form.quantity.label_tag }}
+                    {{ form.quantity }}
+                </div>
+                <div>
+                    {% if items.can_delete %}
+                    {{ form.DELETE }} <label for="{{ form.DELETE.id_for_label }}">Delete</label>
+                    {% endif %}
+                </div>
             </div>
-            <div class="col-md-3">
-                {{ form.quantity.label_tag }}
-                {{ form.quantity }}
-            </div>
-            <div class="col-md-2">
-                {% if items.can_delete %}
-                {{ form.DELETE }} Delete
-                {% endif %}
-            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
 
-    <button type="submit" class="btn btn-primary">Create Sale</button>
+        <div style="margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-primary">Create Sale</button>
+        </div>
+    </div>
 </form>
 
 <script>

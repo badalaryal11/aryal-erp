@@ -13,7 +13,8 @@
 </head>
 
 <body>
-    <aside class="sidebar">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
         <div class="brand">
             <span>🌱</span> Aryal Agro
         </div>
@@ -34,6 +35,7 @@
 
     <main class="main-content">
         <header class="header">
+            <button class="menu-toggle" id="menuToggle">☰</button>
             <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
             <div class="user-profile">
                 <span>Admin</span>
@@ -43,6 +45,25 @@
         {% block content %}
         {% endblock %}
     </main>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            sidebarOverlay.classList.toggle('active');
+        }
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', toggleSidebar);
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+        }
+    </script>
 </body>
 
 </html>

@@ -3,13 +3,12 @@
 {% block page_title %}Inventory{% endblock %}
 
 {% block content %}
-<div class="header" style="margin-bottom: 1rem;">
-    <form method="get" style="display: flex; gap: 0.5rem; flex: 1; max-width: 400px;">
+<div class="toolbar">
+    <form method="get" class="search-form">
         <input type="text" name="q" class="form-control" placeholder="Search by name or code..." value="{{ query }}">
         <button type="submit" class="btn btn-primary">Search</button>
         {% if query %}
-        <a href="{% url 'product_list' %}" class="btn"
-            style="background: var(--bg-dark); border: 1px solid var(--glass-border);">Clear</a>
+        <a href="{% url 'product_list' %}" class="btn btn-outline">Clear</a>
         {% endif %}
     </form>
     <a href="{% url 'product_create' %}" class="btn btn-primary">＋ Add Product</a>
