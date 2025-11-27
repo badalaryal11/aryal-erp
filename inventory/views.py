@@ -17,6 +17,9 @@ def product_list(request):
     
     return render(request, 'inventory/product_list.html', {'products': products, 'query': query})
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
