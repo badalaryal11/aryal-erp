@@ -8,18 +8,24 @@ from .models import Sale, SaleItem
 from .forms import SaleForm, SaleItemFormSet
 from inventory.models import Product, StockTransaction
 
-class SaleListView(ListView):
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_staff
+
+class SaleListView(AdminRequiredMixin, ListView):
     model = Sale
     template_name = 'sales/sale_list.html'
     context_object_name = 'sales'
     ordering = ['-created_at']
 
-class SaleDetailView(DetailView):
+class SaleDetailView(AdminRequiredMixin, DetailView):
     model = Sale
     template_name = 'sales/sale_detail.html'
     context_object_name = 'sale'
 
-class SaleCreateView(CreateView):
+class SaleCreateView(AdminRequiredMixin, CreateView):
     model = Sale
     form_class = SaleForm
     template_name = 'sales/sale_form.html'
