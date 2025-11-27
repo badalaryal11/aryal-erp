@@ -22,4 +22,4 @@ class PageViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Rampur Ward No.5')
         self.assertContains(response, '9851220582')
-        self.assertContains(response, 'aryalagro@gmail.com')
+        self.assertContains(response, 'aryalagro.enterprises@gmail.com')
