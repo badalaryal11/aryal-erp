@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+
+{% block page_title %}Login{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 2rem auto;">
+    <h2 style="text-align: center; margin-bottom: 1.5rem;">Login</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div
+            style="background-color: rgba(255, 0, 0, 0.1); color: #ff6b6b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+            <p>Your username and password didn't match. Please try again.</p>
+        </div>
+        {% endif %}
+
+        <div style="margin-bottom: 1rem;">
+            <label for="id_username"
+                style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Username</label>
+            <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150"
+                required id="id_username"
+                style="width: 100%; padding: 0.75rem; background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary);">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="id_password"
+                style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Password</label>
+            <input type="password" name="password" autocomplete="current-password" required id="id_password"
+                style="width: 100%; padding: 0.75rem; background-color: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary);">
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; justify-content: center;">Login</button>
+
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+</div>
+{% endblock %}

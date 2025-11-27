@@ -32,6 +32,13 @@ class PageViewTests(TestCase):
         self.assertContains(response, '9851220582')
         self.assertContains(response, 'aryalagro.enterprises@gmail.com')
 
+    def test_login_page(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Login')
+        self.assertContains(response, 'Username')
+        self.assertContains(response, 'Password')
+
     def test_dashboard_data_admin(self):
         # Create dummy data
         from inventory.models import Product, Category
