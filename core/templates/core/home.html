@@ -6,17 +6,21 @@
 <div class="grid grid-3">
     <div class="card">
         <h3>Total Sales</h3>
-        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">Rs. 0.00</p>
-        <span class="text-success">+0% from last month</span>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">Rs. {{ total_sales }}</p>
+        <span class="text-success">Updated just now</span>
     </div>
     <div class="card">
         <h3>Low Stock Items</h3>
-        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">0</p>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">{{ low_stock_count }}</p>
+        {% if low_stock_count > 0 %}
         <span class="text-danger">Requires attention</span>
+        {% else %}
+        <span class="text-success">Stock is healthy</span>
+        {% endif %}
     </div>
     <div class="card">
         <h3>Total Products</h3>
-        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">0</p>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">{{ total_products }}</p>
     </div>
 </div>
 
@@ -30,14 +34,24 @@
                     <th>Date</th>
                     <th>Customer</th>
                     <th>Amount</th>
-                    <th>Status</th>
+                    <th>Payment</th>
                 </tr>
             </thead>
             <tbody>
+                {% for sale in recent_transactions %}
+                <tr>
+                    <td>#{{ sale.id }}</td>
+                    <td>{{ sale.created_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ sale.customer_name|default:"Walk-in Customer" }}</td>
+                    <td>Rs. {{ sale.total_amount }}</td>
+                    <td>{{ sale.get_payment_method_display }}</td>
+                </tr>
+                {% empty %}
                 <tr>
                     <td colspan="5" style="text-align: center; color: var(--text-secondary);">No recent transactions
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
