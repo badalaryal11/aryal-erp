@@ -6,17 +6,19 @@ from sales.models import Sale
 from django.db.models import Sum
 
 def home(request):
-    total_sales = Sale.objects.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
-    total_products = Product.objects.count()
-    low_stock_count = Product.objects.filter(stock_quantity__lt=10).count()
-    recent_transactions = Sale.objects.order_by('-created_at')[:5]
+    context = {}
+    if request.user.is_staff:
+        total_sales = Sale.objects.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        total_products = Product.objects.count()
+        low_stock_count = Product.objects.filter(stock_quantity__lt=10).count()
+        recent_transactions = Sale.objects.order_by('-created_at')[:5]
 
-    context = {
-        'total_sales': total_sales,
-        'total_products': total_products,
-        'low_stock_count': low_stock_count,
-        'recent_transactions': recent_transactions,
-    }
+        context = {
+            'total_sales': total_sales,
+            'total_products': total_products,
+            'low_stock_count': low_stock_count,
+            'recent_transactions': recent_transactions,
+        }
     return render(request, 'core/home.html', context)
 
 class ContactView(TemplateView):
