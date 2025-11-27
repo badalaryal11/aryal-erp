@@ -16,3 +16,10 @@ class PageViewTests(TestCase):
         # Check exclusion of admin
         self.client.get('/admin/')
         self.assertFalse(PageView.objects.filter(url='/admin/').exists())
+
+    def test_contact_page(self):
+        response = self.client.get('/contact/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Rampur Ward No.5')
+        self.assertContains(response, '9851220582')
+        self.assertContains(response, 'aryalagro@gmail.com')

@@ -28,6 +28,9 @@
                         Inventory</a></li>
                 <li><a href="#" class="nav-link">💰 Sales</a></li>
                 <li><a href="#" class="nav-link">📈 Reports</a></li>
+                <li><a href="{% url 'contact' %}"
+                        class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">📞
+                        Contact</a></li>
                 <li><a href="/admin/" class="nav-link">⚙️ Admin</a></li>
             </ul>
         </nav>
