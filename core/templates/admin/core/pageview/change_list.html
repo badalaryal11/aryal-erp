@@ -1,0 +1,24 @@
+{% extends "admin/change_list.html" %}
+
+{% block result_list %}
+<div style="margin-bottom: 20px; padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 4px;">
+    <h2 style="margin-top: 0;">Page View Statistics</h2>
+    <div style="display: flex; gap: 20px;">
+        <div>
+            <strong>Total Views:</strong> {{ summary.total_views }}
+        </div>
+        <div>
+            <strong>Unique Visitors:</strong> {{ summary.unique_visitors }}
+        </div>
+    </div>
+    <div style="margin-top: 10px;">
+        <strong>Top Pages:</strong>
+        <ul>
+            {% for page in summary.top_pages %}
+            <li>{{ page.url }}: {{ page.total }} views</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{{ block.super }}
+{% endblock %}
