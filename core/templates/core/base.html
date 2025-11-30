@@ -46,13 +46,13 @@
         <header class="header">
             <button class="menu-toggle" id="menuToggle">☰</button>
             <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
-            <div class="user-profile" style="display: flex; align-items: center; gap: 1rem;">
-                <span>{{ user.username|default:'Guest'|title }}</span>
+            <div class="user-profile" style="display: flex; align-items: center; gap: 0.5rem;">
+                <span>{{ user.username|default:'Guest'|title }},</span>
                 <form action="{% url 'logout' %}" method="post" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit"
-                        style="background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 0.9rem; padding: 0.5rem; border-radius: 0.5rem; transition: color 0.3s ease;">
-                        Logout ↪
+                        style="background: none; border: none; cursor: pointer; color: inherit; font-size: inherit; font-family: inherit; padding: 0;">
+                        Logout
                     </button>
                 </form>
             </div>
