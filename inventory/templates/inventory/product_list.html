@@ -84,7 +84,7 @@
 
 <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
     <div class="dropdown">
-        <button onclick="toggleDropdown()" class="btn btn-outline btn-action">Download ▼</button>
+        <button onclick="toggleDropdown()" class="btn btn-danger btn-action">Download ▼</button>
         <div id="downloadDropdown" class="dropdown-content" style="bottom: 100%; top: auto;">
             <a href="{% url 'export_products' %}?format=pdf">PDF</a>
             <a href="{% url 'export_products' %}?format=excel">Excel</a>

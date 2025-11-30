@@ -128,6 +128,18 @@ body {
     background-color: var(--accent-hover);
 }
 
+.btn-danger {
+    background-color: var(--danger);
+    color: var(--text-primary);
+    border: 1px solid var(--danger);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626;
+    /* Darker red */
+    border-color: #dc2626;
+}
+
 /* Grid */
 .grid {
     display: grid;
