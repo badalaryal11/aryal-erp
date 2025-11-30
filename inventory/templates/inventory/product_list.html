@@ -20,7 +20,7 @@
                 <a href="{% url 'export_products' %}?format=csv">CSV</a>
             </div>
         </div>
-        <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">＋ Add Product</a>
+        <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
     </div>
 </div>
 
@@ -30,7 +30,7 @@
     }
 
     // Close the dropdown if the user clicks outside of it
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (!event.target.matches('.btn-outline')) {
             var dropdowns = document.getElementsByClassName("dropdown-content");
             var i;
