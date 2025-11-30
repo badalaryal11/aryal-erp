@@ -12,14 +12,7 @@
         {% endif %}
     </form>
     <div style="display: flex; gap: 0.5rem;">
-        <div class="dropdown">
-            <button onclick="toggleDropdown()" class="btn btn-outline btn-action">Download ▼</button>
-            <div id="downloadDropdown" class="dropdown-content">
-                <a href="{% url 'export_products' %}?format=pdf">PDF</a>
-                <a href="{% url 'export_products' %}?format=excel">Excel</a>
-                <a href="{% url 'export_products' %}?format=csv">CSV</a>
-            </div>
-        </div>
+        <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
     </div>
 </div>
 
@@ -88,6 +81,13 @@
 </div>
 
 <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
-    <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
+    <div class="dropdown">
+        <button onclick="toggleDropdown()" class="btn btn-outline btn-action">Download ▼</button>
+        <div id="downloadDropdown" class="dropdown-content" style="bottom: 100%; top: auto;">
+            <a href="{% url 'export_products' %}?format=pdf">PDF</a>
+            <a href="{% url 'export_products' %}?format=excel">Excel</a>
+            <a href="{% url 'export_products' %}?format=csv">CSV</a>
+        </div>
+    </div>
 </div>
 {% endblock %}
