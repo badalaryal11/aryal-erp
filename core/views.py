@@ -1,10 +1,13 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from inventory.models import Product
 from sales.models import Sale
 from django.db.models import Sum
 
+@login_required
 def home(request):
     context = {}
     if request.user.is_staff:
@@ -21,5 +24,5 @@ def home(request):
         }
     return render(request, 'core/home.html', context)
 
-class ContactView(TemplateView):
+class ContactView(LoginRequiredMixin, TemplateView):
     template_name = 'core/contact.html'

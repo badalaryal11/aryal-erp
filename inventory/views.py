@@ -12,6 +12,9 @@ from .forms import ProductForm
 
 from django.db.models import Q
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def product_list(request):
     query = request.GET.get('q', '')
     products = Product.objects.all().select_related('category')
