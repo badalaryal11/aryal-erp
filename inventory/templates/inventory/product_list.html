@@ -11,7 +11,12 @@
         <a href="{% url 'product_list' %}" class="btn btn-outline">Clear</a>
         {% endif %}
     </form>
-    <a href="{% url 'product_create' %}" class="btn btn-primary">＋ Add Product</a>
+    <div style="display: flex; gap: 0.5rem;">
+        <a href="{% url 'export_products' %}?format=csv" class="btn btn-outline">CSV</a>
+        <a href="{% url 'export_products' %}?format=excel" class="btn btn-outline">Excel</a>
+        <a href="{% url 'export_products' %}?format=pdf" class="btn btn-outline">PDF</a>
+        <a href="{% url 'product_create' %}" class="btn btn-primary">＋ Add Product</a>
+    </div>
 </div>
 
 <div class="card">
