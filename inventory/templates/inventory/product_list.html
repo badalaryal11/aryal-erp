@@ -12,7 +12,9 @@
         {% endif %}
     </form>
     <div style="display: flex; gap: 0.5rem;">
+        {% if user.is_staff %}
         <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
+        {% endif %}
     </div>
 </div>
 
