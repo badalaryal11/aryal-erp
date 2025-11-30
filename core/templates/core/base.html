@@ -27,7 +27,9 @@
                 <li><a href="{% url 'product_list' %}"
                         class="nav-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}">📦
                         Inventory</a></li>
-                <li><a href="#" class="nav-link">💰 Sales</a></li>
+                <li><a href="{% url 'sales:sale_list' %}"
+                        class="nav-link {% if 'sales' in request.resolver_match.url_name %}active{% endif %}">💰
+                        Sales</a></li>
                 <li><a href="#" class="nav-link">📈 Reports</a></li>
                 <li><a href="{% url 'contact' %}"
                         class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">📞
