@@ -34,6 +34,14 @@
                 <li><a href="{% url 'contact' %}"
                         class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">📞
                         Contact</a></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link"
+                            style="background: none; border: none; width: 100%; cursor: pointer; font-size: 1rem; font-family: inherit;">👋
+                            Logout</button>
+                    </form>
+                </li>
                 <li><a href="/admin/" class="nav-link">⚙️ Admin</a></li>
             </ul>
         </nav>
