@@ -54,7 +54,7 @@
             <button class="menu-toggle" id="menuToggle">☰</button>
             <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
             <div class="user-profile">
-                <span>Admin</span>
+                <span>{{ user.username|default:'Guest'|title }}</span>
             </div>
         </header>
 
