@@ -83,6 +83,7 @@
 
 
 <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+    {% if user.is_authenticated %}
     <div class="dropdown">
         <button onclick="toggleDropdown()" class="btn btn-danger btn-action">Download ▼</button>
         <div id="downloadDropdown" class="dropdown-content" style="bottom: 100%; top: auto;">
@@ -91,5 +92,6 @@
             <a href="{% url 'export_products' %}?format=csv">CSV</a>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
