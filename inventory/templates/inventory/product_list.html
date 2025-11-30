@@ -20,7 +20,6 @@
                 <a href="{% url 'export_products' %}?format=csv">CSV</a>
             </div>
         </div>
-        <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
     </div>
 </div>
 
@@ -85,5 +84,10 @@
             </tbody>
         </table>
     </div>
+</div>
+</div>
+
+<div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+    <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
 </div>
 {% endblock %}
