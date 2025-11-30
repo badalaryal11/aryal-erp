@@ -383,7 +383,7 @@ textarea:focus {
     color: var(--accent);
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown-content.show {
     display: block;
 }
 
