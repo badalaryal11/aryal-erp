@@ -30,7 +30,9 @@
                 <li><a href="{% url 'sales:sale_list' %}"
                         class="nav-link {% if 'sales' in request.resolver_match.url_name %}active{% endif %}">💰
                         Sales</a></li>
-                <li><a href="#" class="nav-link">📈 Reports</a></li>
+                <li><a href="{% url 'reports:dashboard' %}"
+                        class="nav-link {% if 'reports' in request.resolver_match.url_name %}active{% endif %}">📈
+                        Reports</a></li>
                 <li><a href="{% url 'contact' %}"
                         class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">📞
                         Contact</a></li>
