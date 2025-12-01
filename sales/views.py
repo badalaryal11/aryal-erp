@@ -14,18 +14,18 @@ class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_staff
 
-class SaleListView(AdminRequiredMixin, ListView):
+class SaleListView(LoginRequiredMixin, ListView):
     model = Sale
     template_name = 'sales/sale_list.html'
     context_object_name = 'sales'
     ordering = ['-created_at']
 
-class SaleDetailView(AdminRequiredMixin, DetailView):
+class SaleDetailView(LoginRequiredMixin, DetailView):
     model = Sale
     template_name = 'sales/sale_detail.html'
     context_object_name = 'sale'
 
-class SaleCreateView(AdminRequiredMixin, CreateView):
+class SaleCreateView(LoginRequiredMixin, CreateView):
     model = Sale
     form_class = SaleForm
     template_name = 'sales/sale_form.html'
