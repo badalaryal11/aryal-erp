@@ -7,6 +7,7 @@ from inventory.models import Product
 from sales.models import Sale
 from django.db.models import Sum
 
+@login_required
 def home(request):
     total_sales = Sale.objects.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
     total_products = Product.objects.count()

@@ -70,6 +70,6 @@ class PageViewTests(TestCase):
 
     def test_dashboard_access_anonymous(self):
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Rs. 500') # Anonymous should also see sales
+        self.assertNotEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302) # Should redirect to login
 
