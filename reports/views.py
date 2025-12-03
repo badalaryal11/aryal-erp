@@ -51,3 +51,73 @@ class ReportDashboardView(LoginRequiredMixin, TemplateView):
             'recent_sales': recent_sales,
         })
         return context
+
+import csv
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def download_top_selling_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="top_selling_products.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Product Name', 'Product Code', 'Total Quantity Sold', 'Total Revenue'])
+
+    top_products = SaleItem.objects.values(
+        'product__name', 'product__code'
+    ).annotate(
+        total_quantity=Sum('quantity'),
+        total_revenue=Sum('total_price')
+    ).order_by('-total_quantity')[:5]
+
+    for item in top_products:
+        writer.writerow([
+            item['product__name'],
+            item['product__code'],
+            item['total_quantity'],
+            item['total_revenue']
+        ])
+
+    return response
+
+@login_required
+def download_low_stock_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="low_stock_products.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Product Name', 'Product Code', 'Current Stock', 'Price'])
+
+    low_stock_products = Product.objects.filter(stock_quantity__lt=10).order_by('stock_quantity')
+
+    for product in low_stock_products:
+        writer.writerow([
+            product.name,
+            product.code,
+            product.stock_quantity,
+            product.price
+        ])
+
+    return response
+
+@login_required
+def download_recent_sales_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="recent_sales.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Sale ID', 'Date', 'Customer', 'Total Amount', 'Payment Method'])
+
+    recent_sales = Sale.objects.order_by('-created_at')[:50] # Limit to last 50 for CSV
+
+    for sale in recent_sales:
+        writer.writerow([
+            sale.id,
+            sale.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            sale.customer_name or "Walk-in Customer",
+            sale.total_amount,
+            sale.get_payment_method_display()
+        ])
+
+    return response

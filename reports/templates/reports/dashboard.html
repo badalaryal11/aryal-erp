@@ -32,7 +32,11 @@
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
     <!-- Top Selling Products -->
     <div class="card">
-        <h3 style="margin-bottom: 1rem; color: var(--accent);">🏆 Top Selling Products</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="color: var(--accent); margin: 0;">🏆 Top Selling Products</h3>
+            <a href="{% url 'reports:download_top_selling' %}" class="btn-primary"
+                style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Download CSV</a>
+        </div>
         <div class="table-container">
             <table>
                 <thead>
@@ -64,7 +68,11 @@
 
     <!-- Low Stock Alerts -->
     <div class="card">
-        <h3 style="margin-bottom: 1rem; color: var(--danger);">⚠️ Low Stock Alerts</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="color: var(--danger); margin: 0;">⚠️ Low Stock Alerts</h3>
+            <a href="{% url 'reports:download_low_stock' %}" class="btn-primary"
+                style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Download CSV</a>
+        </div>
         <div class="table-container">
             <table>
                 <thead>
@@ -98,6 +106,43 @@
                 </tbody>
             </table>
         </div>
+    </div>
+</div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="color: var(--text-primary); margin: 0;">Recent Sales</h3>
+        <a href="{% url 'reports:download_recent_sales' %}" class="btn-primary"
+            style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Download CSV</a>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in recent_sales %}
+                <tr>
+                    <td>#{{ sale.id }}</td>
+                    <td>{{ sale.created_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ sale.customer_name|default:"Walk-in Customer" }}</td>
+                    <td>Rs. {{ sale.total_amount }}</td>
+                    <td>{{ sale.get_payment_method_display }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-secondary);">No recent sales.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
