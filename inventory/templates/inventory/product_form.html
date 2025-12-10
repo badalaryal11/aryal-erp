@@ -1,6 +1,25 @@
 {% extends 'core/base.html' %}
 
 {% block page_title %}Add Product{% endblock %}
+{% block extra_head %}
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<style>
+    #reader {
+        width: 100%;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+        display: none;
+    }
+
+    #reader video {
+        object-fit: cover;
+        width: 100% !important;
+        height: auto !important;
+        border-radius: 8px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="card" style="max-width: 800px; margin: 0 auto;">
@@ -13,6 +32,8 @@
         </div>
         {% endif %}
 
+        <div id="reader"></div>
+
         <div class="grid grid-3">
             <div class="form-group">
                 <label class="form-label">Name</label>
@@ -21,7 +42,18 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Code (SKU)</label>
-                {{ form.code }}
+                <div style="display: flex; gap: 0.5rem; align-items: stretch;">
+                    {{ form.code }}
+                    <button type="button" id="scanBtn" class="btn"
+                        style="padding: 0 1rem; background: var(--primary); color: white;" title="Scan Barcode/QR">
+                        📷
+                    </button>
+                    <button type="button" id="stopScanBtn" class="btn"
+                        style="padding: 0 1rem; background: var(--danger); color: white; display: none;"
+                        title="Stop Scanning">
+                        ⏹
+                    </button>
+                </div>
                 {{ form.code.errors }}
             </div>
             <div class="form-group">
@@ -70,4 +102,79 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const html5QrCode = new Html5Qrcode("reader");
+    const scanBtn = document.getElementById('scanBtn');
+    const stopScanBtn = document.getElementById('stopScanBtn');
+    const readerDiv = document.getElementById('reader');
+    const codeInput = document.getElementById('{{ form.code.id_for_label }}');
+
+    let isScanning = false;
+
+    const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+        // Handle on success condition with the decoded message.
+        console.log(`Scan result: ${decodedText}`, decodedResult);
+
+        // Play beep sound
+        const audio = new Audio('/static/core/sounds/beep.mp3'); // We might not have this, but good to have
+        // Just filling value for now
+
+        codeInput.value = decodedText;
+
+        // Stop scanning
+        stopScanning();
+
+        // Flash effect
+        readerDiv.style.border = "4px solid #4ade80";
+        setTimeout(() => {
+            readerDiv.style.border = "none";
+        }, 300);
+    };
+
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+    async function startScanning() {
+        try {
+            readerDiv.style.display = 'block';
+            scanBtn.style.display = 'none';
+            stopScanBtn.style.display = 'block';
+
+            await html5QrCode.start(
+                { facingMode: "environment" },
+                config,
+                qrCodeSuccessCallback
+            );
+            isScanning = true;
+        } catch (err) {
+            console.error("Error starting scanner", err);
+            alert("Could not start camera. Please ensure camera permissions are granted.");
+            stopScanning();
+        }
+    }
+
+    async function stopScanning() {
+        if (isScanning) {
+            try {
+                await html5QrCode.stop();
+                readerDiv.style.display = 'none';
+                scanBtn.style.display = 'block';
+                stopScanBtn.style.display = 'none';
+                isScanning = false;
+            } catch (err) {
+                console.error("Failed to stop.", err);
+            }
+        } else {
+            readerDiv.style.display = 'none';
+            scanBtn.style.display = 'block';
+            stopScanBtn.style.display = 'none';
+        }
+    }
+
+    scanBtn.addEventListener('click', startScanning);
+    stopScanBtn.addEventListener('click', stopScanning);
+
+</script>
 {% endblock %}
