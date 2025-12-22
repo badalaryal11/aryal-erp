@@ -19,6 +19,7 @@ class Product(models.Model):
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Cost Price")
     stock_quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=20, default='pcs')
+    packaging = models.CharField(max_length=50, blank=True, null=True, help_text="Packaging type (e.g. Box, Piece)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
