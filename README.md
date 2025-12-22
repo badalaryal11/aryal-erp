@@ -12,6 +12,24 @@ A comprehensive Enterprise Resource Planning (ERP) system designed for Aryal Agr
 -   **Responsive Design**: Modern, dark-themed UI that works seamlessly on desktop and mobile devices.
 -   **Contact Page**: Easy access to business contact information.
 
+
+## Screenshots 📸
+
+![Login Screen](screenshots/screenshot_1.png)
+*Login Screen*
+
+![Admin Dashboard](screenshots/screenshot_2.png)
+*Admin Dashboard*
+
+![Dashboard](screenshots/screenshot_3.png)
+*Dashboard*
+
+![Inventory](screenshots/screenshot_4.png)
+*Inventory Management*
+
+![Reports](screenshots/screenshot_5.png)
+*Reports & Analytics*
+
 ## Tech Stack 🛠️
 
 -   **Backend**: Django (Python)
