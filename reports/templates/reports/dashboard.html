@@ -29,6 +29,33 @@
     </div>
 </div>
 
+<div class="card" style="margin-bottom: 2rem;">
+    <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Daily Sales (Last 7 Days)</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Total Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in daily_sales %}
+                <tr>
+                    <td>{{ day.date|date:"l, M d, Y" }}</td>
+                    <td>Rs. {{ day.total_sales|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center; color: var(--text-secondary);">No sales in the last 7
+                        days.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
     <!-- Top Selling Products -->
     <div class="card">

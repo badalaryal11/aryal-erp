@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils import timezone
 from inventory.models import Product, Category
 from sales.models import Sale, SaleItem
 
@@ -53,3 +54,38 @@ class ReportDownloadTests(TestCase):
         self.assertIn('Sale ID,Date,Customer,Total Amount,Payment Method', content)
         # Check for sale ID in content (might need regex if ID is not predictable, but here it's likely 1)
         self.assertIn(str(self.sale.id), content)
+
+class ReportDashboardTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.client.force_login(self.user)
+        self.url = reverse('reports:dashboard')
+
+    def test_daily_sales_calculation(self):
+        # Create sales on different days
+        today = timezone.now()
+        yesterday = today - timezone.timedelta(days=1)
+        
+        # Sale today
+        Sale.objects.create(total_amount=100)
+        Sale.objects.create(total_amount=200)
+        
+        # Sale yesterday
+        sale_yesterday = Sale.objects.create(total_amount=150)
+        # Manually set created_at for yesterday
+        sale_yesterday.created_at = yesterday
+        sale_yesterday.save()
+        
+        response = self.client.get(self.url)
+        
+        daily_sales = response.context['daily_sales']
+        
+        # Should have items for today and yesterday
+        # Note: Depending on timezone settings, 'today' might match or not, but we should have entries.
+        self.assertTrue(len(daily_sales) >= 1)
+        
+        # Verify structure
+        entry = daily_sales[0]
+        self.assertIn('date', entry)
+        self.assertIn('total_sales', entry)

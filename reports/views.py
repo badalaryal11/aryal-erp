@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from django.db.models.functions import TruncDate
 from sales.models import Sale, SaleItem
 from inventory.models import Product
 
@@ -43,12 +44,20 @@ class ReportDashboardView(LoginRequiredMixin, TemplateView):
         # Recent Sales
         recent_sales = Sale.objects.order_by('-created_at')[:10]
 
+        # Daily Sales (Last 7 Days)
+        daily_sales = Sale.objects.annotate(
+            date=TruncDate('created_at')
+        ).values('date').annotate(
+            total_sales=Sum('total_amount')
+        ).order_by('-date')[:7]
+
         context.update({
             'total_revenue': total_revenue,
             'total_profit': total_profit,
             'top_products': top_products,
             'low_stock_products': low_stock_products,
             'recent_sales': recent_sales,
+            'daily_sales': daily_sales,
         })
         return context
 
