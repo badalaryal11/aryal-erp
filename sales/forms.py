@@ -37,7 +37,7 @@ SaleItemFormSet = inlineformset_factory(
     can_delete=True,
     widgets={
         'product': forms.Select(attrs={'class': 'form-select'}),
-        'packaging': forms.Select(attrs={'class': 'form-select'}),
+        'packaging': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Packaging'}),
         'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
     }
 )
