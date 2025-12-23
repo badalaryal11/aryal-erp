@@ -5,10 +5,11 @@ from .models import Sale, SaleItem
 class SaleForm(forms.ModelForm):
     class Meta:
         model = Sale
-        fields = ['customer_name', 'payment_method']
+        fields = ['customer_name', 'payment_method', 'discount']
         widgets = {
             'customer_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Customer Name'}),
             'payment_method': forms.Select(attrs={'class': 'form-select'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Discount Amount (NPR)', 'min': '0', 'step': '0.01'}),
         }
 
 from django.forms import BaseInlineFormSet

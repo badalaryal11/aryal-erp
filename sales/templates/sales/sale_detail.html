@@ -22,8 +22,21 @@
     </div>
     <div class="card">
         <h3>Summary</h3>
-        <div style="margin-top: 1rem; text-align: right;">
-            <h3 style="color: var(--success); font-size: 2rem;">Rs. {{ sale.total_amount }}</h3>
+        <div style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-light);">Subtotal:</span>
+                <span class="font-bold">NPR {{ sale.total_amount|add:sale.discount|floatformat:2 }}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-light);">Discount:</span>
+                <span class="font-bold" style="color: var(--danger);">- NPR {{ sale.discount|floatformat:2 }}</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 0.5rem; margin-top: 0.5rem;">
+                <span style="font-size: 1.2rem; font-weight: 700;">Total:</span>
+                <span style="font-size: 1.2rem; font-weight: 700; color: var(--success);">NPR {{
+                    sale.total_amount|floatformat:2 }}</span>
+            </div>
         </div>
     </div>
 </div>

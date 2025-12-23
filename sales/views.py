@@ -86,7 +86,7 @@ class SaleCreateView(LoginRequiredMixin, CreateView):
                         note=f"Sale #{self.object.id}"
                     )
 
-                self.object.total_amount = total_amount
+                self.object.total_amount = total_amount - self.object.discount
                 self.object.save()
             return super().form_valid(form)
         else:
