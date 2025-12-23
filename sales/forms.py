@@ -26,7 +26,8 @@ class BaseSaleItemFormSet(BaseInlineFormSet):
                 
                 if product and quantity:
                     if quantity > product.stock_quantity:
-                        form.add_error('quantity', f"Insufficient stock. Available: {product.stock_quantity}")
+                        excess = quantity - product.stock_quantity
+                        form.add_error('quantity', f"Insufficient Quantity in inventory. Exceeded by {excess}. Available: {product.stock_quantity}")
 
 SaleItemFormSet = inlineformset_factory(
     Sale, SaleItem,
