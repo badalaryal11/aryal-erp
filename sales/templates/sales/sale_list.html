@@ -31,9 +31,11 @@
                 Report</a>
         </div>
     </div>
+    {% if perms.sales.add_sale %}
     <a href="{% url 'sales:sale_create' %}" class="btn btn-primary">
         ＋ New Sale
     </a>
+    {% endif %}
 </div>
 
 <script>

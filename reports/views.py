@@ -5,8 +5,9 @@ from django.db.models.functions import TruncDate
 from sales.models import Sale, SaleItem
 from inventory.models import Product
 
-class ReportDashboardView(LoginRequiredMixin, TemplateView):
+class ReportDashboardView(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
     template_name = 'reports/dashboard.html'
+    permission_required = 'sales.view_sale'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -80,9 +81,10 @@ class ReportDashboardView(LoginRequiredMixin, TemplateView):
 
 import csv
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 @login_required
+@permission_required('sales.view_sale', raise_exception=True)
 def download_top_selling_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="top_selling_products.csv"'
@@ -108,6 +110,7 @@ def download_top_selling_csv(request):
     return response
 
 @login_required
+@permission_required('sales.view_sale', raise_exception=True)
 def download_low_stock_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="low_stock_products.csv"'
@@ -128,6 +131,7 @@ def download_low_stock_csv(request):
     return response
 
 @login_required
+@permission_required('sales.view_sale', raise_exception=True)
 def download_recent_sales_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="recent_sales.csv"'
@@ -149,6 +153,7 @@ def download_recent_sales_csv(request):
     return response
 
 @login_required
+@permission_required('sales.view_sale', raise_exception=True)
 def download_daily_sales_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="daily_sales.csv"'
@@ -171,6 +176,7 @@ def download_daily_sales_csv(request):
     return response
 
 @login_required
+@permission_required('sales.view_sale', raise_exception=True)
 def download_monthly_sales_csv(request):
     from django.db.models.functions import TruncMonth
     response = HttpResponse(content_type='text/csv')
@@ -194,6 +200,7 @@ def download_monthly_sales_csv(request):
     return response
 
 @login_required
+@permission_required('sales.view_sale', raise_exception=True)
 def download_yearly_sales_csv(request):
     from django.db.models.functions import TruncYear
     response = HttpResponse(content_type='text/csv')

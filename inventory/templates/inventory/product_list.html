@@ -12,7 +12,9 @@
         {% endif %}
     </form>
     <div style="display: flex; gap: 0.5rem;">
+        {% if perms.inventory.add_product %}
         <a href="{% url 'product_create' %}" class="btn btn-primary btn-action">+ Add Product</a>
+        {% endif %}
     </div>
 </div>
 
@@ -65,7 +67,9 @@
                         </span>
                     </td>
                     <td>
+                        {% if perms.inventory.change_product %}
                         <a href="#" style="color: var(--accent);">Edit</a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% empty %}
