@@ -17,8 +17,20 @@ class Sale(models.Model):
         return f"Sale #{self.id} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
 class SaleItem(models.Model):
+    PACKAGING_CHOICES = (
+        ('Box', 'Box'),
+        ('Piece', 'Piece'),
+        ('Packet', 'Packet'),
+        ('Carton', 'Carton'),
+        ('Dozen', 'Dozen'),
+        ('Kg', 'Kg'),
+        ('Bag', 'Bag'),
+        ('Bundle', 'Bundle'),
+        ('Roll', 'Roll'),
+    )
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    packaging = models.CharField(max_length=50, choices=PACKAGING_CHOICES, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)

@@ -49,6 +49,11 @@ class SaleCreateView(LoginRequiredMixin, CreateView):
             data['items'] = SaleItemFormSet(self.request.POST)
         else:
             data['items'] = SaleItemFormSet()
+        
+        # Create a mapping of product ID to packaging
+        products = Product.objects.all()
+        packaging_map = {p.id: p.packaging for p in products}
+        data['packaging_map'] = packaging_map
         return data
 
     def form_valid(self, form):

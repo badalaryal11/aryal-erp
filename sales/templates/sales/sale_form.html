@@ -28,6 +28,14 @@
                     {{ form.product }}
                 </div>
                 <div>
+                    {{ form.packaging.label_tag }}
+                    {% if form.packaging %}
+                    {{ form.packaging }}
+                    {% else %}
+                    <p class="text-muted">Save to add packaging</p>
+                    {% endif %}
+                </div>
+                <div>
                     {{ form.quantity.label_tag }}
                     {{ form.quantity }}
                 </div>
@@ -46,9 +54,27 @@
     </div>
 </form>
 
+{{ packaging_map|json_script:"packaging-data" }}
+
 <script>
-    // Basic script to handle adding new rows could be added here
-    // For now, we rely on Django's default extra=1.
-    // To make it truly dynamic, we'd need a button to clone the last row and update indices.
+    const packagingData = JSON.parse(document.getElementById('packaging-data').textContent);
+
+    document.addEventListener('change', function (e) {
+        if (e.target.matches('select[name$="-product"]')) {
+            const productId = e.target.value;
+            const packagingSelect = e.target.closest('.formset-row').querySelector('select[name$="-packaging"]');
+
+            if (productId && packagingData[productId]) {
+                const productPackaging = packagingData[productId];
+                // Try to find the matching option
+                for (let i = 0; i < packagingSelect.options.length; i++) {
+                    if (packagingSelect.options[i].value === productPackaging) {
+                        packagingSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}
