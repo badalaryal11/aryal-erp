@@ -45,6 +45,7 @@
                     <th>Code</th>
                     <th>Name</th>
                     <th>Category</th>
+                    <th>Packaging</th>
                     <th>Price</th>
                     <th>Stock</th>
                     <th>Actions</th>
@@ -56,6 +57,7 @@
                     <td>{{ product.code }}</td>
                     <td>{{ product.name }}</td>
                     <td>{{ product.category.name|default:"-" }}</td>
+                    <td>{{ product.packaging|default:"-" }}</td>
                     <td>Rs. {{ product.price }}</td>
                     <td>
                         <span class="{% if product.stock_quantity < 10 %}text-danger{% else %}text-success{% endif %}">
