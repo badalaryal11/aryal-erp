@@ -81,7 +81,7 @@
                     <td>{{ sale.created_at|date:"Y-m-d H:i" }}</td>
                     <td>{{ sale.customer_name|default:"-" }}</td>
                     <td>{{ sale.get_payment_method_display }}</td>
-                    <td>Rs. {{ sale.total_amount }}</td>
+                    <td>NPR {{ sale.total_amount }}</td>
                     <td>
                         <a href="{% url 'sales:sale_detail' sale.id %}" style="color: var(--accent);">View</a>
                     </td>

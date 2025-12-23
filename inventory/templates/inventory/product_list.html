@@ -58,7 +58,7 @@
                     <td>{{ product.name }}</td>
                     <td>{{ product.category.name|default:"-" }}</td>
                     <td>{{ product.packaging|default:"-" }}</td>
-                    <td>Rs. {{ product.price }}</td>
+                    <td>NPR {{ product.price }}</td>
                     <td>
                         <span class="{% if product.stock_quantity < 10 %}text-danger{% else %}text-success{% endif %}">
                             {{ product.stock_quantity }} {{ product.unit }}

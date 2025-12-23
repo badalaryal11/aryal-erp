@@ -218,7 +218,7 @@
                     <td>#{{ sale.id }}</td>
                     <td>{{ sale.created_at|date:"M d, Y H:i" }}</td>
                     <td>{{ sale.customer_name|default:"Walk-in Customer" }}</td>
-                    <td>Rs. {{ sale.total_amount }}</td>
+                    <td>NPR {{ sale.total_amount }}</td>
                     <td>{{ sale.get_payment_method_display }}</td>
                 </tr>
                 {% empty %}

@@ -6,7 +6,7 @@
 <div class="grid grid-3">
     <div class="card">
         <h3>Total Sales</h3>
-        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">Rs. {{ total_sales }}</p>
+        <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">NPR {{ total_sales }}</p>
         <span class="text-success">Updated just now</span>
     </div>
     <div class="card">
@@ -43,7 +43,7 @@
                     <td>#{{ sale.id }}</td>
                     <td>{{ sale.created_at|date:"M d, Y H:i" }}</td>
                     <td>{{ sale.customer_name|default:"Walk-in Customer" }}</td>
-                    <td>Rs. {{ sale.total_amount }}</td>
+                    <td>NPR {{ sale.total_amount }}</td>
                     <td>{{ sale.get_payment_method_display }}</td>
                 </tr>
                 {% empty %}
