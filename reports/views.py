@@ -51,6 +51,21 @@ class ReportDashboardView(LoginRequiredMixin, TemplateView):
             total_sales=Sum('total_amount')
         ).order_by('-date')[:7]
 
+        # Monthly Sales
+        from django.db.models.functions import TruncMonth, TruncYear
+        monthly_sales = Sale.objects.annotate(
+            date=TruncMonth('created_at')
+        ).values('date').annotate(
+            total_sales=Sum('total_amount')
+        ).order_by('-date')[:12]
+
+        # Yearly Sales
+        yearly_sales = Sale.objects.annotate(
+            date=TruncYear('created_at')
+        ).values('date').annotate(
+            total_sales=Sum('total_amount')
+        ).order_by('-date')[:5]
+
         context.update({
             'total_revenue': total_revenue,
             'total_profit': total_profit,
@@ -58,6 +73,8 @@ class ReportDashboardView(LoginRequiredMixin, TemplateView):
             'low_stock_products': low_stock_products,
             'recent_sales': recent_sales,
             'daily_sales': daily_sales,
+            'monthly_sales': monthly_sales,
+            'yearly_sales': yearly_sales,
         })
         return context
 

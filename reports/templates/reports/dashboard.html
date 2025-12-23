@@ -56,6 +56,64 @@
     </div>
 </div>
 
+<div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Monthly Sales -->
+    <div class="card">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Monthly Sales</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for month in monthly_sales %}
+                    <tr>
+                        <td>{{ month.date|date:"F Y" }}</td>
+                        <td>Rs. {{ month.total_sales|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" style="text-align: center; color: var(--text-secondary);">No sales recorded.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Yearly Sales -->
+    <div class="card">
+        <h3 style="color: var(--text-primary); margin-bottom: 1rem;">Yearly Sales</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Total Sales</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for year in yearly_sales %}
+                    <tr>
+                        <td>{{ year.date|date:"Y" }}</td>
+                        <td>Rs. {{ year.total_sales|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" style="text-align: center; color: var(--text-secondary);">No sales recorded.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
     <!-- Top Selling Products -->
     <div class="card">
