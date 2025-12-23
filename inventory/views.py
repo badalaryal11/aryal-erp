@@ -50,9 +50,9 @@ def export_products(request):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="inventory.csv"'
         writer = csv.writer(response)
-        writer.writerow(['Name', 'Code', 'Category', 'Price', 'Stock', 'Cost Price'])
+        writer.writerow(['Name', 'Code', 'Category', 'Packaging', 'Price', 'Stock', 'Cost Price'])
         for product in products:
-            writer.writerow([product.name, product.code, product.category.name if product.category else '-', product.price, product.stock_quantity, product.cost_price])
+            writer.writerow([product.name, product.code, product.category.name if product.category else '-', product.packaging or '-', product.price, product.stock_quantity, product.cost_price])
         return response
 
     elif format_type == 'excel':
@@ -61,10 +61,10 @@ def export_products(request):
         wb = openpyxl.Workbook()
         ws = wb.active
         ws.title = "Inventory"
-        headers = ['Name', 'Code', 'Category', 'Price', 'Stock', 'Cost Price']
+        headers = ['Name', 'Code', 'Category', 'Packaging', 'Price', 'Stock', 'Cost Price']
         ws.append(headers)
         for product in products:
-            ws.append([product.name, product.code, product.category.name if product.category else '-', product.price, product.stock_quantity, product.cost_price])
+            ws.append([product.name, product.code, product.category.name if product.category else '-', product.packaging or '-', product.price, product.stock_quantity, product.cost_price])
         wb.save(response)
         return response
 
@@ -75,12 +75,13 @@ def export_products(request):
         doc = SimpleDocTemplate(response, pagesize=letter)
         elements = []
         
-        data = [['Name', 'Code', 'Category', 'Price', 'Stock', 'Cost Price']]
+        data = [['Name', 'Code', 'Category', 'Packaging', 'Price', 'Stock', 'Cost Price']]
         for product in products:
             data.append([
                 product.name,
                 product.code,
                 product.category.name if product.category else '-',
+                product.packaging or '-',
                 str(product.price),
                 str(product.stock_quantity),
                 str(product.cost_price)
