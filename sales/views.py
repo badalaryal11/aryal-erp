@@ -54,9 +54,10 @@ class SaleCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         items = context['items']
-        with transaction.atomic():
-            self.object = form.save()
-            if items.is_valid():
+        
+        if items.is_valid():
+            with transaction.atomic():
+                self.object = form.save()
                 items.instance = self.object
                 saved_items = items.save()
                 
@@ -67,15 +68,7 @@ class SaleCreateView(LoginRequiredMixin, CreateView):
                     
                     # Update stock
                     product = item.product
-                    if product.stock_quantity < item.quantity:
-                        # This check should ideally be in form validation, but for now:
-                        messages.error(self.request, f"Not enough stock for {product.name}")
-                        # Raise exception to rollback transaction? 
-                        # Or just let it go negative? Let's allow negative for now but warn, 
-                        # or strictly enforce. Let's strictly enforce if possible, but 
-                        # raising exception here crashes the view. 
-                        # Better to validate in formset clean method.
-                        # For simplicity in this iteration, we'll just deduct.
+                    # Stock validation is handled in formset clean method
                     
                     product.stock_quantity -= item.quantity
                     product.save()
@@ -90,6 +83,6 @@ class SaleCreateView(LoginRequiredMixin, CreateView):
 
                 self.object.total_amount = total_amount
                 self.object.save()
-            else:
-                return self.render_to_response(self.get_context_data(form=form))
-        return super().form_valid(form)
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
