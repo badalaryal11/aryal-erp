@@ -10,7 +10,7 @@ from django.contrib import messages
 from .models import Product, Category
 from .forms import ProductForm
 
-from django.db.models import Q
+from django.db.models import Q, Sum, F
 
 from django.contrib.auth.decorators import login_required
 
@@ -25,7 +25,18 @@ def product_list(request):
             Q(code__icontains=query)
         )
     
-    return render(request, 'inventory/product_list.html', {'products': products, 'query': query})
+    # Calculate absolute totals for ALL products, not just filtered ones
+    aggregates = Product.objects.aggregate(
+        total_value=Sum(F('price') * F('stock_quantity')),
+        total_cost=Sum(F('cost_price') * F('stock_quantity'))
+    )
+    
+    return render(request, 'inventory/product_list.html', {
+        'products': products, 
+        'query': query,
+        'total_inventory_value': aggregates['total_value'] or 0,
+        'total_inventory_cost': aggregates['total_cost'] or 0
+    })
 
 from django.contrib.auth.decorators import login_required
 

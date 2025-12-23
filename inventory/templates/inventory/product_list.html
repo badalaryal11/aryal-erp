@@ -3,6 +3,22 @@
 {% block page_title %}Inventory{% endblock %}
 
 {% block content %}
+<div
+    style="margin-bottom: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+    <div class="card">
+        <h3>Total Inventory Value (Selling Price)</h3>
+        <p style="font-size: 1.5rem; font-weight: 700; color: var(--success); margin-top: 0.5rem;">
+            NPR {{ total_inventory_value|floatformat:2 }}
+        </p>
+    </div>
+    <div class="card">
+        <h3>Total Inventory Cost</h3>
+        <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 0.5rem;">
+            NPR {{ total_inventory_cost|floatformat:2 }}
+        </p>
+    </div>
+</div>
+
 <div class="toolbar">
     <form method="get" class="search-form">
         <input type="text" name="q" class="form-control" placeholder="Search by name or code..." value="{{ query }}">
