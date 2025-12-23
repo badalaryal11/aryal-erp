@@ -12,10 +12,9 @@ from .forms import ProductForm
 
 from django.db.models import Q
 
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 
 @login_required
-@permission_required('inventory.view_product', raise_exception=True)
 def product_list(request):
     query = request.GET.get('q', '')
     products = Product.objects.all().select_related('category')
@@ -28,8 +27,9 @@ def product_list(request):
     
     return render(request, 'inventory/product_list.html', {'products': products, 'query': query})
 
+from django.contrib.auth.decorators import login_required
+
 @login_required
-@permission_required('inventory.add_product', raise_exception=True)
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -42,7 +42,6 @@ def product_create(request):
     return render(request, 'inventory/product_form.html', {'form': form})
 
 @login_required
-@permission_required('inventory.view_product', raise_exception=True)
 def export_products(request):
     format_type = request.GET.get('format', 'csv')
     products = Product.objects.all().select_related('category')
