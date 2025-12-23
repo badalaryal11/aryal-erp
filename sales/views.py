@@ -20,6 +20,18 @@ class SaleListView(LoginRequiredMixin, ListView):
     context_object_name = 'sales'
     ordering = ['-created_at']
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        date_query = self.request.GET.get('date')
+        if date_query:
+            queryset = queryset.filter(created_at__date=date_query)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['date_query'] = self.request.GET.get('date', '')
+        return context
+
 class SaleDetailView(LoginRequiredMixin, DetailView):
     model = Sale
     template_name = 'sales/sale_detail.html'
