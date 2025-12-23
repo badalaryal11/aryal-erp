@@ -147,3 +147,71 @@ def download_recent_sales_csv(request):
         ])
 
     return response
+
+@login_required
+def download_daily_sales_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="daily_sales.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Date', 'Total Sales'])
+
+    daily_sales = Sale.objects.annotate(
+        date=TruncDate('created_at')
+    ).values('date').annotate(
+        total_sales=Sum('total_amount')
+    ).order_by('-date')
+
+    for day in daily_sales:
+        writer.writerow([
+            day['date'].strftime('%Y-%m-%d'),
+            day['total_sales']
+        ])
+
+    return response
+
+@login_required
+def download_monthly_sales_csv(request):
+    from django.db.models.functions import TruncMonth
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="monthly_sales.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Month', 'Total Sales'])
+
+    monthly_sales = Sale.objects.annotate(
+        date=TruncMonth('created_at')
+    ).values('date').annotate(
+        total_sales=Sum('total_amount')
+    ).order_by('-date')
+
+    for month in monthly_sales:
+        writer.writerow([
+            month['date'].strftime('%Y-%m'),
+            month['total_sales']
+        ])
+
+    return response
+
+@login_required
+def download_yearly_sales_csv(request):
+    from django.db.models.functions import TruncYear
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="yearly_sales.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Year', 'Total Sales'])
+
+    yearly_sales = Sale.objects.annotate(
+        date=TruncYear('created_at')
+    ).values('date').annotate(
+        total_sales=Sum('total_amount')
+    ).order_by('-date')
+
+    for year in yearly_sales:
+        writer.writerow([
+            year['date'].strftime('%Y'),
+            year['total_sales']
+        ])
+
+    return response
