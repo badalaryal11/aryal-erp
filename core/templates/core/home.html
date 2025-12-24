@@ -69,85 +69,91 @@
         </table>
     </div>
 </div>
+{{ sales_dates|json_script:"sales-dates-data" }}
+{{ sales_amounts|json_script:"sales-amounts-data" }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         // Debugging logs
         console.log('Initializing Sales Chart...');
-
+        
         const canvas = document.getElementById('salesChart');
         if (!canvas) {
             console.error('Canvas element not found');
             return;
         }
-
+        
         const ctx = canvas.getContext('2d');
+        
+        // Data passed from Django view safely using json_script
+        let dates = [];
+        let amounts = [];
+        try {
+            dates = JSON.parse(document.getElementById('sales-dates-data').textContent);
+            amounts = JSON.parse(document.getElementById('sales-amounts-data').textContent);
+        } catch (e) {
+            console.error('Error parsing sales data:', e);
+        }
+        
+        console.log('Sales Dates:', dates);
+        console.log('Sales Amounts:', amounts);
 
-        // Data passed from Django view
-        // Using default filters to ensure valid JS array even if data is missing
-        const dates = {{ sales_dates| safe |default: "[]"
-    }};
-    const amounts = {{ sales_amounts| safe |default: "[]" }};
-
-    console.log('Sales Dates:', dates);
-    console.log('Sales Amounts:', amounts);
-
-    // Check if data exists
-    if (!dates || dates.length === 0) {
-        console.warn('No sales data available for the chart.');
-
-        // Draw a message on the canvas
-        ctx.save();
-        ctx.font = '16px sans-serif';
-        ctx.fillStyle = '#666';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('No sales data recorded in the last 30 days', canvas.width / 2, canvas.height / 2);
-        ctx.restore();
-        return;
-    }
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: dates,
-            datasets: [{
-                label: 'Daily Sales (NPR)',
-                data: amounts,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                tension: 0.1,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return 'NPR ' + context.parsed.y.toLocaleString();
+        // Check if data exists
+        if (!dates || dates.length === 0) {
+            console.warn('No sales data available for the chart.');
+            
+            // Draw a message on the canvas
+            ctx.save();
+            ctx.font = '16px sans-serif';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('No sales data recorded in the last 30 days', canvas.width / 2, canvas.height / 2);
+            ctx.restore();
+            return;
+        }
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Daily Sales (NPR)',
+                    data: amounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'NPR ' + context.parsed.y.toLocaleString();
+                            }
                         }
                     }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function (value) {
-                            return 'NPR ' + value;
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'NPR ' + value;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
     });
 </script>
 {% endblock %}
