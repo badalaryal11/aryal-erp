@@ -6,13 +6,18 @@
 {% block content %}
 <div class="card" style="margin-bottom: 2rem;">
     <form method="get" action="" style="display: flex; gap: 1rem; align-items: end;">
-        <div style="flex: 1; max-width: 300px;">
+        <div style="flex: 1; min-width: 200px;">
             <label class="form-label" style="font-weight: 600;">Filter by Date</label>
             <input type="date" name="date" class="form-control" value="{{ date_query }}" style="font-size: 1rem;">
         </div>
+        <div style="flex: 2; min-width: 300px;">
+            <label class="form-label" style="font-weight: 600;">Search Customer</label>
+            <input type="text" name="customer" class="form-control" placeholder="Enter customer name..."
+                value="{{ customer_query }}" style="font-size: 1rem;">
+        </div>
         <div style="display: flex; gap: 0.5rem;">
             <button type="submit" class="btn btn-primary" style="height: 42px;">Filter</button>
-            {% if date_query %}
+            {% if date_query or customer_query %}
             <a href="{% url 'sales:sale_list' %}" class="btn btn-outline" style="height: 42px;">Clear</a>
             {% endif %}
         </div>

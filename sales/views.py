@@ -23,13 +23,18 @@ class SaleListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         date_query = self.request.GET.get('date')
+        customer_query = self.request.GET.get('customer')
+        
         if date_query:
             queryset = queryset.filter(created_at__date=date_query)
+        if customer_query:
+            queryset = queryset.filter(customer_name__icontains=customer_query)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['date_query'] = self.request.GET.get('date', '')
+        context['customer_query'] = self.request.GET.get('customer', '')
         return context
 
 class SaleDetailView(LoginRequiredMixin, DetailView):
