@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from inventory.models import Product
 from sales.models import Sale
 from django.db.models import Sum
-from django.db.models.functions import TruncDay
+from django.db.models import Sum
 
 @login_required
 def home(request):
@@ -20,16 +20,18 @@ def home(request):
     today = timezone.now()
     last_30_days = today - timedelta(days=30)
     
-    daily_sales = Sale.objects.filter(
-        created_at__gte=last_30_days
-    ).annotate(
-        day=TruncDay('created_at')
-    ).values('day').annotate(
-        total=Sum('total_amount')
-    ).order_by('day')
-
-    sales_dates = [item['day'].strftime('%Y-%m-%d') for item in daily_sales]
-    sales_amounts = [float(item['total']) for item in daily_sales]
+    # Fetch sales and aggregate in Python to avoid DB timezone issues
+    sales_qs = Sale.objects.filter(created_at__gte=last_30_days).values('created_at', 'total_amount')
+    sales_data = {}
+    
+    for sale in sales_qs:
+        day_str = sale['created_at'].strftime('%Y-%m-%d')
+        sales_data[day_str] = sales_data.get(day_str, 0) + float(sale['total_amount'])
+    
+    # Sort by date
+    sorted_dates = sorted(sales_data.keys())
+    sales_dates = sorted_dates
+    sales_amounts = [sales_data[date] for date in sorted_dates]
 
     context = {
         'total_sales': total_sales,
