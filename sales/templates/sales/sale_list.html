@@ -4,56 +4,59 @@
 {% block page_title %}Sales{% endblock %}
 
 {% block content %}
-<div class="toolbar">
-    <div class="search-form">
-        <form method="get" action="" style="display: flex; gap: 0.5rem; align-items: center;">
-            <input type="date" name="date" class="form-control" value="{{ date_query }}" style="padding: 0.4rem;">
-            <button type="submit" class="btn btn-primary" style="padding: 0.4rem 0.8rem;">Filter</button>
+<div class="card" style="margin-bottom: 2rem;">
+    <form method="get" action="" style="display: flex; gap: 1rem; align-items: end;">
+        <div style="flex: 1; max-width: 300px;">
+            <label class="form-label" style="font-weight: 600;">Filter by Date</label>
+            <input type="date" name="date" class="form-control" value="{{ date_query }}" style="font-size: 1rem;">
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary" style="height: 42px;">Filter</button>
             {% if date_query %}
-            <a href="{% url 'sales:sale_list' %}" class="btn results-count"
-                style="padding: 0.4rem 0.8rem; background-color: var(--border-color); color: var(--text-primary); text-decoration: none;">Clear</a>
+            <a href="{% url 'sales:sale_list' %}" class="btn btn-outline" style="height: 42px;">Clear</a>
             {% endif %}
-        </form>
-    </div>
-    <div class="card">
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
-            <a href="{% url 'sales:sale_create' %}" class="btn btn-primary">
-                ＋ New Sale
-            </a>
         </div>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Customer</th>
-                        <th>Payment Method</th>
-                        <th>Total Amount</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for sale in sales %}
-                    <tr>
-                        <td>{{ sale.id }}</td>
-                        <td>{{ sale.created_at|date:"Y-m-d H:i" }}</td>
-                        <td>{{ sale.customer_name|default:"-" }}</td>
-                        <td>{{ sale.get_payment_method_display }}</td>
-                        <td>NPR {{ sale.total_amount }}</td>
-                        <td>
-                            <a href="{% url 'sales:sale_detail' sale.id %}" style="color: var(--accent);">View</a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No
-                            sales
-                            found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    </form>
+</div>
+<div class="card">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+        <a href="{% url 'sales:sale_create' %}" class="btn btn-primary">
+            ＋ New Sale
+        </a>
     </div>
-    {% endblock %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Payment Method</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.id }}</td>
+                    <td>{{ sale.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>{{ sale.customer_name|default:"-" }}</td>
+                    <td>{{ sale.get_payment_method_display }}</td>
+                    <td>NPR {{ sale.total_amount }}</td>
+                    <td>
+                        <a href="{% url 'sales:sale_detail' sale.id %}" style="color: var(--accent);">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No
+                        sales
+                        found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
