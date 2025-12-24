@@ -37,6 +37,11 @@ class SaleDetailView(LoginRequiredMixin, DetailView):
     template_name = 'sales/sale_detail.html'
     context_object_name = 'sale'
 
+class SaleInvoiceView(LoginRequiredMixin, DetailView):
+    model = Sale
+    template_name = 'sales/invoice.html'
+    context_object_name = 'sale'
+
 class SaleCreateView(LoginRequiredMixin, CreateView):
     model = Sale
     form_class = SaleForm

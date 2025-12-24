@@ -9,6 +9,10 @@
     <a href="{% url 'sales:sale_list' %}" class="btn btn-outline">
         Back to List
     </a>
+    <a href="{% url 'sales:sale_invoice' sale.id %}" target="_blank" class="btn btn-primary"
+        style="margin-left: 0.5rem;">
+        🖨️ Print Invoice
+    </a>
 </div>
 
 <div class="grid grid-3">
