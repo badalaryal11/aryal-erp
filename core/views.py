@@ -29,31 +29,72 @@ def home(request):
         recent_transactions = Sale.objects.order_by('-created_at')[:5]
 
         today = timezone.now()
-        last_30_days = today - timedelta(days=30)
         
-        # Fetch sales and aggregate in Python
-        sales_qs = Sale.objects.filter(created_at__gte=last_30_days).values('created_at', 'total_amount')
-        sales_data = {}
-        
-        for sale in sales_qs:
-            if not sale['created_at']:
-                continue
-            day_str = sale['created_at'].strftime('%Y-%m-%d')
-            amount = sale['total_amount'] or 0
-            sales_data[day_str] = sales_data.get(day_str, 0) + float(amount)
-        
-        # Sort by date
-        sorted_dates = sorted(sales_data.keys())
-        sales_dates = sorted_dates
-        sales_amounts = [sales_data[date] for date in sorted_dates]
+        # --- Helper for Daily Aggregation ---
+        def get_daily_sales(days_back):
+            start_date = today - timedelta(days=days_back)
+            qs = Sale.objects.filter(created_at__gte=start_date).values('created_at', 'total_amount')
+            data_map = {}
+            for s in qs:
+                if not s['created_at']: continue
+                date_str = s['created_at'].strftime('%Y-%m-%d')
+                data_map[date_str] = data_map.get(date_str, 0) + float(s['total_amount'] or 0)
+            
+            # Fill in missing dates for continuous line
+            sorted_dates = []
+            sorted_amounts = []
+            for i in range(days_back):
+                d = (start_date + timedelta(days=i)).strftime('%Y-%m-%d')
+                sorted_dates.append(d)
+                sorted_amounts.append(data_map.get(d, 0))
+            return sorted_dates, sorted_amounts
+
+        # --- Helper for Yearly (Monthly) Aggregation ---
+        def get_monthly_sales():
+            start_date = today - timedelta(days=365)
+            qs = Sale.objects.filter(created_at__gte=start_date).values('created_at', 'total_amount')
+            data_map = {}
+            for s in qs:
+                if not s['created_at']: continue
+                # key by Year-Month
+                month_key = s['created_at'].strftime('%Y-%m')
+                data_map[month_key] = data_map.get(month_key, 0) + float(s['total_amount'] or 0)
+            
+            # Generate continuous months
+            sorted_labels = [] # e.g. "Jan 2024"
+            sorted_amounts = []
+            current = start_date
+            while current <= today:
+                m_key = current.strftime('%Y-%m')
+                label = current.strftime('%b %Y') # "Dec 2024"
+                if not sorted_labels or sorted_labels[-1] != label: # Add unique
+                    sorted_labels.append(label)
+                    sorted_amounts.append(data_map.get(m_key, 0))
+                # Increment roughly a month
+                current += timedelta(days=31)
+                # Correction to ensure we don't skip or repeat weirdly due to 31 days
+                # Simply setting to 1st of next month would be cleaner but loop is acceptable for <12 items
+            
+            return sorted_labels, sorted_amounts
+
+        # Calculate all datasets
+        weekly_dates, weekly_amounts = get_daily_sales(7)
+        monthly_dates, monthly_amounts = get_daily_sales(30)
+        yearly_labels, yearly_amounts = get_monthly_sales()
 
         context.update({
             'total_sales': total_sales,
             'total_products': total_products,
             'low_stock_count': low_stock_count,
             'recent_transactions': recent_transactions,
-            'sales_dates': sales_dates,
-            'sales_amounts': sales_amounts,
+            
+            # Pass all datasets
+            'weekly_dates': weekly_dates,
+            'weekly_amounts': weekly_amounts,
+            'monthly_dates': monthly_dates,
+            'monthly_amounts': monthly_amounts, 
+            'yearly_labels': yearly_labels,
+            'yearly_amounts': yearly_amounts,
         })
     except Exception as e:
         print(f"Error in dashboard view: {str(e)}")
