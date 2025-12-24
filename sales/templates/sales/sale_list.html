@@ -15,12 +15,12 @@
             {% endif %}
         </form>
     </div>
-    <a href="{% url 'sales:sale_create' %}" class="btn btn-primary">
-        ＋ New Sale
-    </a>
-
-
     <div class="card">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+            <a href="{% url 'sales:sale_create' %}" class="btn btn-primary">
+                ＋ New Sale
+            </a>
+        </div>
         <div class="table-container">
             <table>
                 <thead>
