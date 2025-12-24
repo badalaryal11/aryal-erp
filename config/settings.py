@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
@@ -18,7 +19,10 @@ import dj_database_url
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+if getattr(sys, 'frozen', False):
+    BASE_DIR = Path(sys._MEIPASS)
+else:
+    BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -94,6 +98,15 @@ DATABASES = {
         conn_max_age=600
     )
 }
+
+if getattr(sys, 'frozen', False):
+    # When frozen, save db to user folder so it persists
+    db_folder = Path.home() / '.aryal-erp'
+    db_folder.mkdir(exist_ok=True)
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': db_folder / 'db.sqlite3',
+    }
 
 
 # Password validation
