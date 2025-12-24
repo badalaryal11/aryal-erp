@@ -8,7 +8,7 @@
     <div class="card">
         <h3 style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Revenue</h3>
         <div style="font-size: 2rem; font-weight: 700; color: var(--success);">
-            Rs. {{ total_revenue|floatformat:2 }}
+            NPR {{ total_revenue|floatformat:2 }}
         </div>
     </div>
 
@@ -16,7 +16,7 @@
     <div class="card">
         <h3 style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Total Profit</h3>
         <div style="font-size: 2rem; font-weight: 700; color: var(--accent);">
-            Rs. {{ total_profit|floatformat:2 }}
+            NPR {{ total_profit|floatformat:2 }}
         </div>
     </div>
 
@@ -43,7 +43,7 @@
                 {% for day in daily_sales %}
                 <tr>
                     <td>{{ day.date|date:"l, M d, Y" }}</td>
-                    <td>Rs. {{ day.total_sales|floatformat:2 }}</td>
+                    <td>NPR {{ day.total_sales|floatformat:2 }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -72,7 +72,7 @@
                     {% for month in monthly_sales %}
                     <tr>
                         <td>{{ month.date|date:"F Y" }}</td>
-                        <td>Rs. {{ month.total_sales|floatformat:2 }}</td>
+                        <td>NPR {{ month.total_sales|floatformat:2 }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -100,7 +100,7 @@
                     {% for year in yearly_sales %}
                     <tr>
                         <td>{{ year.date|date:"Y" }}</td>
-                        <td>Rs. {{ year.total_sales|floatformat:2 }}</td>
+                        <td>NPR {{ year.total_sales|floatformat:2 }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -139,7 +139,7 @@
                             <div style="font-size: 0.8rem; color: var(--text-secondary);">{{ item.product__code }}</div>
                         </td>
                         <td>{{ item.total_quantity }}</td>
-                        <td>Rs. {{ item.total_revenue|floatformat:2 }}</td>
+                        <td>NPR {{ item.total_revenue|floatformat:2 }}</td>
                     </tr>
                     {% empty %}
                     <tr>
