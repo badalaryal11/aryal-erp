@@ -4,6 +4,13 @@
 
 {% block content %}
 <div class="grid grid-3">
+    {% if error_message %}
+    <div class="card"
+        style="grid-column: span 3; background-color: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;">
+        <h3>⚠️ System Notice</h3>
+        <p>{{ error_message }}</p>
+    </div>
+    {% endif %}
     <div class="card">
         <h3>Total Sales</h3>
         <p style="font-size: 2rem; font-weight: 700; margin-top: 0.5rem;">NPR {{ total_sales }}</p>
