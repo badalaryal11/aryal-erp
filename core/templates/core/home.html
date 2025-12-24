@@ -65,12 +65,40 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('salesChart').getContext('2d');
+        // Debugging logs
+        console.log('Initializing Sales Chart...');
+
+        const canvas = document.getElementById('salesChart');
+        if (!canvas) {
+            console.error('Canvas element not found');
+            return;
+        }
+
+        const ctx = canvas.getContext('2d');
 
         // Data passed from Django view
-        const dates = {{ sales_dates| safe
+        // Using default filters to ensure valid JS array even if data is missing
+        const dates = {{ sales_dates| safe |default: "[]"
     }};
-    const amounts = {{ sales_amounts| safe }};
+    const amounts = {{ sales_amounts| safe |default: "[]" }};
+
+    console.log('Sales Dates:', dates);
+    console.log('Sales Amounts:', amounts);
+
+    // Check if data exists
+    if (!dates || dates.length === 0) {
+        console.warn('No sales data available for the chart.');
+
+        // Draw a message on the canvas
+        ctx.save();
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = '#666';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('No sales data recorded in the last 30 days', canvas.width / 2, canvas.height / 2);
+        ctx.restore();
+        return;
+    }
 
     new Chart(ctx, {
         type: 'line',
