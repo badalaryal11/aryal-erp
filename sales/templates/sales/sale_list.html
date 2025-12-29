@@ -7,6 +7,17 @@
 <div class="card" style="margin-bottom: 2rem;">
     <form method="get" action="" style="display: flex; gap: 1rem; align-items: end;">
         <div style="flex: 1; min-width: 200px;">
+            <label class="form-label" style="font-weight: 600;">Filter by Product</label>
+            <select name="product" class="form-control" style="font-size: 1rem;">
+                <option value="">All Products</option>
+                {% for product in products %}
+                <option value="{{ product.id }}" {% if product.id == product_query %}selected{% endif %}>
+                    {{ product.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
             <label class="form-label" style="font-weight: 600;">Filter by Date</label>
             <input type="date" name="date" class="form-control" value="{{ date_query }}" style="font-size: 1rem;">
         </div>
@@ -17,7 +28,7 @@
         </div>
         <div style="display: flex; gap: 0.5rem;">
             <button type="submit" class="btn btn-primary" style="height: 42px;">Filter</button>
-            {% if date_query or customer_query %}
+            {% if date_query or customer_query or product_query %}
             <a href="{% url 'sales:sale_list' %}" class="btn btn-outline" style="height: 42px;">Clear</a>
             {% endif %}
         </div>

@@ -24,17 +24,25 @@ class SaleListView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset().prefetch_related('items__product')
         date_query = self.request.GET.get('date')
         customer_query = self.request.GET.get('customer')
+        product_query = self.request.GET.get('product')
         
         if date_query:
             queryset = queryset.filter(created_at__date=date_query)
         if customer_query:
             queryset = queryset.filter(customer_name__icontains=customer_query)
+        if product_query:
+            queryset = queryset.filter(items__product_id=product_query).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['date_query'] = self.request.GET.get('date', '')
         context['customer_query'] = self.request.GET.get('customer', '')
+        context['products'] = Product.objects.all()
+        try:
+            context['product_query'] = int(self.request.GET.get('product', 0))
+        except (ValueError, TypeError):
+            context['product_query'] = 0
         return context
 
 class SaleDetailView(LoginRequiredMixin, DetailView):
@@ -60,10 +68,12 @@ class SaleCreateView(LoginRequiredMixin, CreateView):
         else:
             data['items'] = SaleItemFormSet()
         
-        # Create a mapping of product ID to packaging
+        # Create a mapping of product ID to packaging and price
         products = Product.objects.all()
         packaging_map = {p.id: p.packaging for p in products}
+        price_map = {p.id: float(p.price) for p in products}
         data['packaging_map'] = packaging_map
+        data['price_map'] = price_map
         return data
 
     def form_valid(self, form):

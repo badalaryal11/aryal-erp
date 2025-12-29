@@ -17,6 +17,10 @@ class Sale(models.Model):
     def __str__(self):
         return f"Sale #{self.id} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
 
+    @property
+    def subtotal(self):
+        return self.total_amount + self.discount
+
 class SaleItem(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)

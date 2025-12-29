@@ -29,7 +29,7 @@
         <div style="margin-top: 1rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                 <span style="color: var(--text-light);">Subtotal:</span>
-                <span class="font-bold">NPR {{ sale.total_amount|add:sale.discount|floatformat:2 }}</span>
+                <span class="font-bold">NPR {{ sale.subtotal|floatformat:2 }}</span>
             </div>
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                 <span style="color: var(--text-light);">Discount:</span>

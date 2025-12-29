@@ -13,7 +13,14 @@
     <div class="card" style="margin-bottom: 2rem;">
         <h3>Sale Details</h3>
         <div class="form-grid" style="margin-top: 1rem;">
-            {{ form.as_p }}
+            <div style="margin-bottom: 1rem;">
+                {{ form.customer_name.label_tag }}
+                {{ form.customer_name }}
+            </div>
+            <div>
+                {{ form.payment_method.label_tag }}
+                {{ form.payment_method }}
+            </div>
         </div>
     </div>
 
@@ -48,6 +55,18 @@
             {% endfor %}
         </div>
 
+        <div
+            style="margin-top: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 1rem; border-radius: 8px;">
+            <label class="form-label" style="font-weight: 600; margin: 0;">Subtotal (Before Discount):</label>
+            <span id="subtotal-display" style="font-size: 1.2rem; font-weight: 700;">NPR 0.00</span>
+        </div>
+
+        <div style="margin-top: 1rem; margin-bottom: 1.5rem;">
+            <label for="{{ form.discount.id_for_label }}" class="form-label"
+                style="display: block; font-weight: 600;">Discount</label>
+            {{ form.discount }}
+        </div>
+
         <div style="margin-top: 1.5rem;">
             <button type="submit" class="btn btn-primary">Create Sale</button>
         </div>
@@ -55,11 +74,41 @@
 </form>
 
 {{ packaging_map|json_script:"packaging-data" }}
+{{ price_map|json_script:"price-data" }}
 
 <script>
     const packagingData = JSON.parse(document.getElementById('packaging-data').textContent);
+    const priceData = JSON.parse(document.getElementById('price-data').textContent);
+    const subtotalDisplay = document.getElementById('subtotal-display');
+
+    function updateSubtotal() {
+        let total = 0;
+        const rows = document.querySelectorAll('.formset-row');
+
+        rows.forEach(row => {
+            // Skip deleted rows
+            const deleteInput = row.querySelector('input[name$="-DELETE"]');
+            if (deleteInput && deleteInput.checked) return;
+
+            const productSelect = row.querySelector('select[name$="-product"]');
+            const quantityInput = row.querySelector('input[name$="-quantity"]');
+
+            if (productSelect && quantityInput) {
+                const productId = productSelect.value;
+                const quantity = parseFloat(quantityInput.value) || 0;
+
+                if (productId && priceData[productId]) {
+                    const price = priceData[productId];
+                    total += price * quantity;
+                }
+            }
+        });
+
+        subtotalDisplay.textContent = `NPR ${total.toFixed(2)}`;
+    }
 
     document.addEventListener('change', function (e) {
+        // Handle product packaging update
         if (e.target.matches('select[name$="-product"]')) {
             const productId = e.target.value;
             const packagingSelect = e.target.closest('.formset-row').querySelector('select[name$="-packaging"]');
@@ -75,6 +124,23 @@
                 }
             }
         }
+
+        // Handle subtotal update for product, quantity, or delete changes
+        if (e.target.matches('select[name$="-product"]') ||
+            e.target.matches('input[name$="-quantity"]') ||
+            e.target.matches('input[name$="-DELETE"]')) {
+            updateSubtotal();
+        }
     });
+
+    // Also update on keyup for quantity for immediate feedback
+    document.addEventListener('keyup', function (e) {
+        if (e.target.matches('input[name$="-quantity"]')) {
+            updateSubtotal();
+        }
+    });
+
+    // Initial calculation
+    updateSubtotal();
 </script>
 {% endblock %}
