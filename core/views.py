@@ -11,6 +11,7 @@ from django.db.models import Sum
 
 
 @login_required
+@login_required
 def home(request):
     context = {
         'total_sales': 0,
@@ -19,6 +20,7 @@ def home(request):
         'recent_transactions': [],
         'sales_dates': [],
         'sales_amounts': [],
+        'profit_amounts': [],  # Added for profit
         'error_message': None
     }
 
@@ -31,56 +33,86 @@ def home(request):
         today = timezone.now()
         
         # --- Helper for Daily Aggregation ---
-        def get_daily_sales(days_back):
+        from django.db.models import F
+        
+        def get_daily_data(days_back):
             start_date = today - timedelta(days=days_back)
-            qs = Sale.objects.filter(created_at__gte=start_date).values('created_at', 'total_amount')
-            data_map = {}
+            # Annotate each sale with its total cost
+            qs = Sale.objects.filter(created_at__gte=start_date).annotate(
+                total_cost=Sum(F('items__quantity') * F('items__product__cost_price'))
+            ).values('created_at', 'total_amount', 'total_cost')
+            
+            sales_map = {}
+            profit_map = {}
+            
             for s in qs:
                 if not s['created_at']: continue
                 date_str = s['created_at'].strftime('%Y-%m-%d')
-                data_map[date_str] = data_map.get(date_str, 0) + float(s['total_amount'] or 0)
+                
+                amount = float(s['total_amount'] or 0)
+                cost = float(s['total_cost'] or 0)
+                profit = amount - cost
+                
+                sales_map[date_str] = sales_map.get(date_str, 0) + amount
+                profit_map[date_str] = profit_map.get(date_str, 0) + profit
             
             # Fill in missing dates for continuous line
             sorted_dates = []
-            sorted_amounts = []
+            sorted_sales = []
+            sorted_profit = []
+            
             for i in range(days_back):
                 d = (start_date + timedelta(days=i)).strftime('%Y-%m-%d')
                 sorted_dates.append(d)
-                sorted_amounts.append(data_map.get(d, 0))
-            return sorted_dates, sorted_amounts
+                sorted_sales.append(sales_map.get(d, 0))
+                sorted_profit.append(profit_map.get(d, 0))
+                
+            return sorted_dates, sorted_sales, sorted_profit
 
         # --- Helper for Yearly (Monthly) Aggregation ---
-        def get_monthly_sales():
+        def get_monthly_data():
             start_date = today - timedelta(days=365)
-            qs = Sale.objects.filter(created_at__gte=start_date).values('created_at', 'total_amount')
-            data_map = {}
+            qs = Sale.objects.filter(created_at__gte=start_date).annotate(
+                total_cost=Sum(F('items__quantity') * F('items__product__cost_price'))
+            ).values('created_at', 'total_amount', 'total_cost')
+            
+            sales_map = {}
+            profit_map = {}
+            
             for s in qs:
                 if not s['created_at']: continue
                 # key by Year-Month
                 month_key = s['created_at'].strftime('%Y-%m')
-                data_map[month_key] = data_map.get(month_key, 0) + float(s['total_amount'] or 0)
+                
+                amount = float(s['total_amount'] or 0)
+                cost = float(s['total_cost'] or 0)
+                profit = amount - cost
+
+                sales_map[month_key] = sales_map.get(month_key, 0) + amount
+                profit_map[month_key] = profit_map.get(month_key, 0) + profit
             
             # Generate continuous months
             sorted_labels = [] # e.g. "Jan 2024"
-            sorted_amounts = []
+            sorted_sales = []
+            sorted_profit = []
+            
             current = start_date
             while current <= today:
                 m_key = current.strftime('%Y-%m')
                 label = current.strftime('%b %Y') # "Dec 2024"
                 if not sorted_labels or sorted_labels[-1] != label: # Add unique
                     sorted_labels.append(label)
-                    sorted_amounts.append(data_map.get(m_key, 0))
+                    sorted_sales.append(sales_map.get(m_key, 0))
+                    sorted_profit.append(profit_map.get(m_key, 0))
                 # Increment roughly a month
                 current += timedelta(days=31)
-                # Correction to ensure we don't skip or repeat weirdly due to 31 days
-                # Simply setting to 1st of next month would be cleaner but loop is acceptable for <12 items
             
-            return sorted_labels, sorted_amounts
+            return sorted_labels, sorted_sales, sorted_profit
 
         # Calculate all datasets
-        weekly_dates, weekly_amounts = get_daily_sales(7)
-        monthly_dates, monthly_amounts = get_daily_sales(30)
-        yearly_labels, yearly_amounts = get_monthly_sales()
+        weekly_dates, weekly_sales, weekly_profit = get_daily_data(7)
+        monthly_dates, monthly_sales, monthly_profit = get_daily_data(30)
+        yearly_labels, yearly_sales, yearly_profit = get_monthly_data()
 
         context.update({
             'total_sales': total_sales,
@@ -90,11 +122,16 @@ def home(request):
             
             # Pass all datasets
             'weekly_dates': weekly_dates,
-            'weekly_amounts': weekly_amounts,
+            'weekly_amounts': weekly_sales,
+            'weekly_profit': weekly_profit,
+            
             'monthly_dates': monthly_dates,
-            'monthly_amounts': monthly_amounts, 
+            'monthly_amounts': monthly_sales, 
+            'monthly_profit': monthly_profit,
+            
             'yearly_labels': yearly_labels,
-            'yearly_amounts': yearly_amounts,
+            'yearly_amounts': yearly_sales,
+            'yearly_profit': yearly_profit,
         })
     except Exception as e:
         print(f"Error in dashboard view: {str(e)}")

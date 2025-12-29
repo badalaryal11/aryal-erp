@@ -103,18 +103,23 @@
 
 {{ weekly_dates|json_script:"weekly-dates" }}
 {{ weekly_amounts|json_script:"weekly-amounts" }}
+{{ weekly_profit|json_script:"weekly-profit" }}
+
 {{ monthly_dates|json_script:"monthly-dates" }}
 {{ monthly_amounts|json_script:"monthly-amounts" }}
+{{ monthly_profit|json_script:"monthly-profit" }}
+
 {{ yearly_labels|json_script:"yearly-labels" }}
 {{ yearly_amounts|json_script:"yearly-amounts" }}
+{{ yearly_profit|json_script:"yearly-profit" }}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     let chartInstance = null;
     let chartData = {
-        weekly: { dates: [], amounts: [] },
-        monthly: { dates: [], amounts: [] },
-        yearly: { dates: [], amounts: [] }
+        weekly: { dates: [], amounts: [], profit: [] },
+        monthly: { dates: [], amounts: [], profit: [] },
+        yearly: { dates: [], amounts: [], profit: [] }
     };
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -122,12 +127,15 @@
         try {
             chartData.weekly.dates = JSON.parse(document.getElementById('weekly-dates').textContent);
             chartData.weekly.amounts = JSON.parse(document.getElementById('weekly-amounts').textContent);
+            chartData.weekly.profit = JSON.parse(document.getElementById('weekly-profit').textContent);
 
             chartData.monthly.dates = JSON.parse(document.getElementById('monthly-dates').textContent);
             chartData.monthly.amounts = JSON.parse(document.getElementById('monthly-amounts').textContent);
+            chartData.monthly.profit = JSON.parse(document.getElementById('monthly-profit').textContent);
 
             chartData.yearly.dates = JSON.parse(document.getElementById('yearly-labels').textContent);
             chartData.yearly.amounts = JSON.parse(document.getElementById('yearly-amounts').textContent);
+            chartData.yearly.profit = JSON.parse(document.getElementById('yearly-profit').textContent);
         } catch (e) {
             console.error('Error parsing sales data:', e);
         }
@@ -149,41 +157,58 @@
             chartInstance.destroy();
         }
 
-        // Check if data is empty
-        if (!data.dates || data.dates.length === 0 || data.amounts.every(a => a === 0)) {
-            // Basic empty state handling could go here, but since we fill zeros in backend 
-            // it usually won't be empty unless no time passed.
-        }
-
         chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: data.dates,
-                datasets: [{
-                    label: 'Sales (NPR)',
-                    data: data.amounts,
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    borderColor: '#2563eb',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: true,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#2563eb',
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
+                datasets: [
+                    {
+                        label: 'Sales (NPR)',
+                        data: data.amounts,
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderColor: '#2563eb',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#2563eb',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    {
+                        label: 'Profit (NPR)',
+                        data: data.profit,
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderColor: '#10b981',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#10b981',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 8
+                        }
+                    },
                     tooltip: {
                         backgroundColor: '#1e293b',
                         padding: 12,
                         callbacks: {
                             label: function (context) {
-                                return 'NPR ' + context.parsed.y.toLocaleString();
+                                return context.dataset.label + ': ' + context.parsed.y.toLocaleString();
                             }
                         }
                     }
