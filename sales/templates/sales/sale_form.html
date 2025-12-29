@@ -55,6 +55,30 @@
             {% endfor %}
         </div>
 
+        <div style="margin-top: 1rem;">
+            <button type="button" id="add-item-btn" class="btn btn-secondary">＋ Add Another Item</button>
+        </div>
+
+        <div id="empty-form" style="display: none;">
+            <div class="formset-row">
+                <div>
+                    {{ items.empty_form.product.label_tag }}
+                    {{ items.empty_form.product }}
+                </div>
+                <div>
+                    {{ items.empty_form.packaging.label_tag }}
+                    {{ items.empty_form.packaging }}
+                </div>
+                <div>
+                    {{ items.empty_form.quantity.label_tag }}
+                    {{ items.empty_form.quantity }}
+                </div>
+                <div>
+                    {{ items.empty_form.DELETE }} <label for="{{ items.empty_form.DELETE.id_for_label }}">Delete</label>
+                </div>
+            </div>
+        </div>
+
         <div
             style="margin-top: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 1rem; border-radius: 8px;">
             <label class="form-label" style="font-weight: 600; margin: 0;">Subtotal (Before Discount):</label>
@@ -146,6 +170,23 @@
     });
 
     // Initial calculation
+    const addItemBtn = document.getElementById('add-item-btn');
+    const totalForms = document.getElementById('id_items-TOTAL_FORMS');
+    const emptyFormHtml = document.getElementById('empty-form').innerHTML;
+    const formContainer = document.getElementById('formset-container');
+
+    addItemBtn.addEventListener('click', function() {
+        const formCount = parseInt(totalForms.value);
+        const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formCount);
+        
+        const newRow = document.createElement('div');
+        newRow.innerHTML = newFormHtml;
+        // Unwrap the div
+        formContainer.appendChild(newRow.firstElementChild);
+        
+        totalForms.value = formCount + 1;
+    });
+
     updateSubtotal();
 </script>
 {% endblock %}
