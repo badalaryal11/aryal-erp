@@ -21,7 +21,7 @@ class SaleListView(LoginRequiredMixin, ListView):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().prefetch_related('items__product')
         date_query = self.request.GET.get('date')
         customer_query = self.request.GET.get('customer')
         
