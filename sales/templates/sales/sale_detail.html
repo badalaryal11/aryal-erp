@@ -54,6 +54,7 @@
                     <th>Product</th>
                     <th>Quantity</th>
                     <th>Unit Price</th>
+                    <th>Discount</th>
                     <th>Total</th>
                 </tr>
             </thead>
@@ -63,6 +64,7 @@
                     <td>{{ item.product.name }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>NPR {{ item.unit_price }}</td>
+                    <td>{% if item.discount > 0 %}NPR {{ item.discount }}{% else %}-{% endif %}</td>
                     <td>NPR {{ item.total_price }}</td>
                 </tr>
                 {% endfor %}

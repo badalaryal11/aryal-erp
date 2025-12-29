@@ -27,12 +27,15 @@ class SaleItem(models.Model):
     packaging = models.CharField(max_length=50, blank=True, null=True)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    discount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def save(self, *args, **kwargs):
         if not self.unit_price:
             self.unit_price = self.product.price
-        self.total_price = self.quantity * self.unit_price
+        # Calculate total: (qty * price) - discount
+        subtotal = self.quantity * self.unit_price
+        self.total_price = subtotal - self.discount
         super().save(*args, **kwargs)
 
     def __str__(self):

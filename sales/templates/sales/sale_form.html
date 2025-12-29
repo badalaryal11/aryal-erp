@@ -29,7 +29,8 @@
         {{ items.management_form }}
         <div id="formset-container" style="margin-top: 1rem;">
             {% for form in items %}
-            <div class="formset-row">
+            <div class="formset-row"
+                style="grid-template-columns: 3fr 1fr 1fr 1fr auto; display: grid; gap: 1rem; align-items: end;">
                 <div>
                     {{ form.product.label_tag }}
                     {{ form.product }}
@@ -47,6 +48,10 @@
                     {{ form.quantity }}
                 </div>
                 <div>
+                    {{ form.discount.label_tag }}
+                    {{ form.discount }}
+                </div>
+                <div>
                     {% if items.can_delete %}
                     {{ form.DELETE }} <label for="{{ form.DELETE.id_for_label }}">Delete</label>
                     {% endif %}
@@ -60,7 +65,8 @@
         </div>
 
         <div id="empty-form" style="display: none;">
-            <div class="formset-row">
+            <div class="formset-row"
+                style="grid-template-columns: 3fr 1fr 1fr 1fr auto; display: grid; gap: 1rem; align-items: end;">
                 <div>
                     {{ items.empty_form.product.label_tag }}
                     {{ items.empty_form.product }}
@@ -72,6 +78,10 @@
                 <div>
                     {{ items.empty_form.quantity.label_tag }}
                     {{ items.empty_form.quantity }}
+                </div>
+                <div>
+                    {{ items.empty_form.discount.label_tag }}
+                    {{ items.empty_form.discount }}
                 </div>
                 <div>
                     {{ items.empty_form.DELETE }} <label for="{{ items.empty_form.DELETE.id_for_label }}">Delete</label>
@@ -116,14 +126,16 @@
 
             const productSelect = row.querySelector('select[name$="-product"]');
             const quantityInput = row.querySelector('input[name$="-quantity"]');
+            const discountInput = row.querySelector('input[name$="-discount"]');
 
             if (productSelect && quantityInput) {
                 const productId = productSelect.value;
                 const quantity = parseFloat(quantityInput.value) || 0;
+                const itemDiscount = parseFloat(discountInput ? discountInput.value : 0) || 0;
 
                 if (productId && priceData[productId]) {
                     const price = priceData[productId];
-                    total += price * quantity;
+                    total += (price * quantity) - itemDiscount;
                 }
             }
         });
@@ -139,7 +151,7 @@
 
             if (productId && packagingData[productId] && packagingField) {
                 const productPackaging = packagingData[productId];
-                
+
                 if (packagingField.tagName === 'SELECT') {
                     // Try to find the matching option
                     for (let i = 0; i < packagingField.options.length; i++) {
@@ -153,18 +165,20 @@
                 }
             }
         }
-        
-        // Handle subtotal update for product, quantity, or delete changes
-        if (e.target.matches('select[name$="-product"]') || 
-            e.target.matches('input[name$="-quantity"]') || 
+
+        // Handle subtotal update for product, quantity, delete, or item discount changes
+        if (e.target.matches('select[name$="-product"]') ||
+            e.target.matches('input[name$="-quantity"]') ||
+            e.target.matches('input[name$="-discount"]') ||
             e.target.matches('input[name$="-DELETE"]')) {
             updateSubtotal();
         }
     });
 
-    // Also update on keyup for quantity for immediate feedback
+    // Also update on keyup for quantity and discount for immediate feedback
     document.addEventListener('keyup', function (e) {
-        if (e.target.matches('input[name$="-quantity"]')) {
+        if (e.target.matches('input[name$="-quantity"]') ||
+            e.target.matches('input[name$="-discount"]')) {
             updateSubtotal();
         }
     });
@@ -175,15 +189,15 @@
     const emptyFormHtml = document.getElementById('empty-form').innerHTML;
     const formContainer = document.getElementById('formset-container');
 
-    addItemBtn.addEventListener('click', function() {
+    addItemBtn.addEventListener('click', function () {
         const formCount = parseInt(totalForms.value);
         const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formCount);
-        
+
         const newRow = document.createElement('div');
         newRow.innerHTML = newFormHtml;
         // Unwrap the div
         formContainer.appendChild(newRow.firstElementChild);
-        
+
         totalForms.value = formCount + 1;
     });
 

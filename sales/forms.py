@@ -33,12 +33,13 @@ class BaseSaleItemFormSet(BaseInlineFormSet):
 SaleItemFormSet = inlineformset_factory(
     Sale, SaleItem,
     formset=BaseSaleItemFormSet,
-    fields=['product', 'packaging', 'quantity'],
+    fields=['product', 'packaging', 'quantity', 'discount'],
     extra=1,
     can_delete=True,
     widgets={
         'product': forms.Select(attrs={'class': 'form-select'}),
         'packaging': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Packaging'}),
         'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
+        'discount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Item Discount', 'min': '0', 'step': '0.01'}),
     }
 )
