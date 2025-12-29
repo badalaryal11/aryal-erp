@@ -111,23 +111,28 @@
         // Handle product packaging update
         if (e.target.matches('select[name$="-product"]')) {
             const productId = e.target.value;
-            const packagingSelect = e.target.closest('.formset-row').querySelector('select[name$="-packaging"]');
+            const packagingField = e.target.closest('.formset-row').querySelector('[name$="-packaging"]');
 
-            if (productId && packagingData[productId]) {
+            if (productId && packagingData[productId] && packagingField) {
                 const productPackaging = packagingData[productId];
-                // Try to find the matching option
-                for (let i = 0; i < packagingSelect.options.length; i++) {
-                    if (packagingSelect.options[i].value === productPackaging) {
-                        packagingSelect.selectedIndex = i;
-                        break;
+                
+                if (packagingField.tagName === 'SELECT') {
+                    // Try to find the matching option
+                    for (let i = 0; i < packagingField.options.length; i++) {
+                        if (packagingField.options[i].value === productPackaging) {
+                            packagingField.selectedIndex = i;
+                            break;
+                        }
                     }
+                } else if (packagingField.tagName === 'INPUT') {
+                    packagingField.value = productPackaging;
                 }
             }
         }
-
+        
         // Handle subtotal update for product, quantity, or delete changes
-        if (e.target.matches('select[name$="-product"]') ||
-            e.target.matches('input[name$="-quantity"]') ||
+        if (e.target.matches('select[name$="-product"]') || 
+            e.target.matches('input[name$="-quantity"]') || 
             e.target.matches('input[name$="-DELETE"]')) {
             updateSubtotal();
         }
